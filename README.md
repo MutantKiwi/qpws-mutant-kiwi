@@ -80,6 +80,3 @@ how-to for adding a new quarter are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md
 Code: MIT. The permit data belongs to the Queensland Government (Department of the Environment, Tourism, Science and
 Innovation); treat the processed tables here as derived data for exploration, not an official statistic.
 
----
-Built by Greg Lauer ([MutantKiwi](https://github.com/MutantKiwi)) · also at [maps.mutant.kiwi](https://maps.mutant.kiwi) and
-[imagery.mutant.kiwi](https://imagery.mutant.kiwi).
