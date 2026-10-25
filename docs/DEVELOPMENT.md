@@ -16,7 +16,8 @@
  QPWS Permits Explorer$│   └── lookups/
  QPWS Permits Explorer$│       ├── area_aliases.csv              manual park/area → coordinates or operator id  (EDIT THIS to fix geocoding)
  QPWS Permits Explorer$│       ├── postcodes.csv                 postcode → centroid, locality label, state, SA4
- QPWS Permits Explorer$│       └── qld_school_terms.csv          Queensland state-school term dates 2010–2029 (add a year here when published)
+ QPWS Permits Explorer$│       ├── qld_school_terms.csv          Queensland state-school term dates 2010–2029 (add a year here when published)
+│       └── fees.csv                      camping and vehicle-permit fee schedule by financial year, 2009-10 → 2026-27
  QPWS Permits Explorer$├── etl/build_calendar.py   day-level calendar: QLD public holidays (holidays pkg) + school holidays + long weekends
  QPWS Permits Explorer$├── data/parquet/           ETL output — this is what the app serves (baked into the Docker image)
  QPWS Permits Explorer$├── Dockerfile, fly.toml, requirements.txt
@@ -145,3 +146,12 @@ areas with no operator (Fraser Island → K'gari, Moreton Island NP → Recreati
  QPWS Permits Explorer$| `/api/search?term=` | typeahead over parks, areas, postcodes, localities |
  QPWS Permits Explorer$
  QPWS Permits Explorer$Interactive docs at `/api/docs`.
+
+### Fee schedule (`lookups/fees.csv`)
+One row per financial year × fee. Camping: per person / per family / student per night (statewide). Vehicle: by recreation
+area and duration (Cooloola daily online/counter, weekly, monthly, annual; K'gari monthly/annual; Bribie weekly/annual;
+combined Cooloola+K'gari; Moreton until 2021-22). Sources: the live parks.qld.gov.au fee pages for the current year and
+archived copies (web.archive.org) of the DERM / NPRSR / NPSR / DES / DESI fee pages for earlier years; 2022-23
+cross-checked against Queensland Parliament Question on Notice 1010 (2023). Fees are indexed each 1 July; 2024-25 was a
+freeze. Three Cooloola counter-sale rates are estimated (flagged in the source column). Not yet used by the app —
+the obvious use is an estimated-revenue metric (person-nights × per-person fee; permits × fee by area/duration/FY).

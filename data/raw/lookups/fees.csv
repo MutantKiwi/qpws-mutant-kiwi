@@ -1,0 +1,268 @@
+fy,fee_type,area,duration,amount,source
+2009-10,camping,all,per person per night,5.0,QPWS fee pages via web.archive.org
+2009-10,camping,all,per family per night,20.0,QPWS fee pages via web.archive.org
+2009-10,camping,all,student (educational) per night,2.75,QPWS fee pages via web.archive.org
+2010-11,camping,all,per person per night,5.15,QPWS fee pages via web.archive.org
+2010-11,camping,all,per family per night,20.6,QPWS fee pages via web.archive.org
+2010-11,camping,all,student (educational) per night,2.8,QPWS fee pages via web.archive.org
+2011-12,camping,all,per person per night,5.3,QPWS fee pages via web.archive.org
+2011-12,camping,all,per family per night,21.3,QPWS fee pages via web.archive.org
+2011-12,camping,all,student (educational) per night,2.9,QPWS fee pages via web.archive.org
+2012-13,camping,all,per person per night,5.45,QPWS fee pages via web.archive.org
+2012-13,camping,all,per family per night,21.8,QPWS fee pages via web.archive.org
+2012-13,camping,all,student (educational) per night,3.0,QPWS fee pages via web.archive.org
+2013-14,camping,all,per person per night,5.6,QPWS fee pages via web.archive.org
+2013-14,camping,all,per family per night,22.4,QPWS fee pages via web.archive.org
+2013-14,camping,all,student (educational) per night,3.1,QPWS fee pages via web.archive.org
+2014-15,camping,all,per person per night,5.75,QPWS fee pages via web.archive.org
+2014-15,camping,all,per family per night,23.0,QPWS fee pages via web.archive.org
+2014-15,camping,all,student (educational) per night,3.2,QPWS fee pages via web.archive.org
+2015-16,camping,all,per person per night,5.95,QPWS fee pages via web.archive.org
+2015-16,camping,all,per family per night,23.8,QPWS fee pages via web.archive.org
+2015-16,camping,all,student (educational) per night,3.3,QPWS fee pages via web.archive.org
+2016-17,camping,all,per person per night,6.15,QPWS fee pages via web.archive.org
+2016-17,camping,all,per family per night,24.6,QPWS fee pages via web.archive.org
+2016-17,camping,all,student (educational) per night,3.4,QPWS fee pages via web.archive.org
+2017-18,camping,all,per person per night,6.35,QPWS fee pages via web.archive.org
+2017-18,camping,all,per family per night,25.4,QPWS fee pages via web.archive.org
+2017-18,camping,all,student (educational) per night,3.5,QPWS fee pages via web.archive.org
+2018-19,camping,all,per person per night,6.55,QPWS fee pages via web.archive.org
+2018-19,camping,all,per family per night,26.2,QPWS fee pages via web.archive.org
+2018-19,camping,all,student (educational) per night,3.6,QPWS fee pages via web.archive.org
+2019-20,camping,all,per person per night,6.65,QPWS fee pages via web.archive.org
+2019-20,camping,all,per family per night,26.6,QPWS fee pages via web.archive.org
+2019-20,camping,all,student (educational) per night,3.65,QPWS fee pages via web.archive.org
+2020-21,camping,all,per person per night,6.75,QPWS fee pages via web.archive.org
+2020-21,camping,all,per family per night,27.0,QPWS fee pages via web.archive.org
+2020-21,camping,all,student (educational) per night,3.7,QPWS fee pages via web.archive.org
+2021-22,camping,all,per person per night,6.85,QPWS fee pages via web.archive.org
+2021-22,camping,all,per family per night,27.4,QPWS fee pages via web.archive.org
+2022-23,camping,all,per person per night,7.0,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,camping,all,per family per night,28.0,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,camping,all,student (educational) per night,3.85,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2023-24,camping,all,per person per night,7.25,QPWS fee pages via web.archive.org
+2023-24,camping,all,per family per night,29.0,QPWS fee pages via web.archive.org
+2023-24,camping,all,student (educational) per night,4.0,QPWS fee pages via web.archive.org
+2024-25,camping,all,per person per night,7.25,QPWS fee pages via web.archive.org
+2024-25,camping,all,per family per night,29.0,QPWS fee pages via web.archive.org
+2024-25,camping,all,student (educational) per night,4.0,QPWS fee pages via web.archive.org
+2025-26,camping,all,per person per night,7.5,QPWS fee pages via web.archive.org
+2025-26,camping,all,per family per night,30.0,QPWS fee pages via web.archive.org
+2026-27,camping,all,per person per night,7.75,parks.qld.gov.au (live)
+2026-27,camping,all,per family per night,31.0,parks.qld.gov.au (live)
+2026-27,camping,all,student (educational) per night,4.25,parks.qld.gov.au (live)
+2009-10,vehicle,Moreton Island,Monthly,38.25,QPWS fee pages via web.archive.org
+2009-10,vehicle,Moreton Island,Annual,191.5,QPWS fee pages via web.archive.org
+2009-10,vehicle,K'gari (Fraser Island),Monthly,38.25,QPWS fee pages via web.archive.org
+2009-10,vehicle,K'gari (Fraser Island),Annual,191.5,QPWS fee pages via web.archive.org
+2009-10,vehicle,Bribie Island,Weekly,36.6,QPWS fee pages via web.archive.org
+2009-10,vehicle,Bribie Island,Annual,114.2,QPWS fee pages via web.archive.org
+2010-11,vehicle,Moreton Island,Monthly,39.35,QPWS fee pages via web.archive.org
+2010-11,vehicle,Moreton Island,Annual,197.2,QPWS fee pages via web.archive.org
+2010-11,vehicle,K'gari (Fraser Island),Monthly,39.35,QPWS fee pages via web.archive.org
+2010-11,vehicle,K'gari (Fraser Island),Annual,197.2,QPWS fee pages via web.archive.org
+2010-11,vehicle,Bribie Island,Weekly,37.65,QPWS fee pages via web.archive.org
+2010-11,vehicle,Bribie Island,Annual,117.6,QPWS fee pages via web.archive.org
+2010-11,vehicle,Cooloola,Daily (online),10.0,QPWS fee pages via web.archive.org
+2010-11,vehicle,Cooloola,Daily (counter),15.0,QPWS fee pages via web.archive.org
+2010-11,vehicle,Cooloola,Weekly,25.0,QPWS fee pages via web.archive.org
+2010-11,vehicle,Cooloola,Monthly,39.35,QPWS fee pages via web.archive.org
+2010-11,vehicle,Cooloola,Annual,197.2,QPWS fee pages via web.archive.org
+2011-12,vehicle,Moreton Island,Monthly,40.75,QPWS fee pages via web.archive.org
+2011-12,vehicle,Moreton Island,Annual,204.2,QPWS fee pages via web.archive.org
+2011-12,vehicle,K'gari (Fraser Island),Monthly,40.75,QPWS fee pages via web.archive.org
+2011-12,vehicle,K'gari (Fraser Island),Annual,204.2,QPWS fee pages via web.archive.org
+2011-12,vehicle,Bribie Island,Weekly,39.0,QPWS fee pages via web.archive.org
+2011-12,vehicle,Bribie Island,Annual,121.8,QPWS fee pages via web.archive.org
+2011-12,vehicle,Cooloola,Daily (online),10.35,QPWS fee pages via web.archive.org
+2011-12,vehicle,Cooloola,Daily (counter),15.5,QPWS fee pages via web.archive.org
+2011-12,vehicle,Cooloola,Weekly,25.9,QPWS fee pages via web.archive.org
+2011-12,vehicle,Cooloola,Monthly,40.75,QPWS fee pages via web.archive.org
+2011-12,vehicle,Cooloola,Annual,204.2,QPWS fee pages via web.archive.org
+2011-12,vehicle,Combined Cooloola & K'gari,Monthly,65.2,QPWS fee pages via web.archive.org
+2011-12,vehicle,Combined Cooloola & K'gari,Annual,326.8,QPWS fee pages via web.archive.org
+2012-13,vehicle,Moreton Island,Monthly,42.15,QPWS fee pages via web.archive.org
+2012-13,vehicle,Moreton Island,Annual,211.3,QPWS fee pages via web.archive.org
+2012-13,vehicle,K'gari (Fraser Island),Monthly,42.15,QPWS fee pages via web.archive.org
+2012-13,vehicle,K'gari (Fraser Island),Annual,211.3,QPWS fee pages via web.archive.org
+2012-13,vehicle,Bribie Island,Weekly,40.35,QPWS fee pages via web.archive.org
+2012-13,vehicle,Bribie Island,Annual,126.0,QPWS fee pages via web.archive.org
+2012-13,vehicle,Cooloola,Daily (online),10.7,QPWS fee pages via web.archive.org
+2012-13,vehicle,Cooloola,Daily (counter),16.0,QPWS fee pages via web.archive.org
+2012-13,vehicle,Cooloola,Weekly,26.8,QPWS fee pages via web.archive.org
+2012-13,vehicle,Cooloola,Monthly,42.15,QPWS fee pages via web.archive.org
+2012-13,vehicle,Cooloola,Annual,211.3,QPWS fee pages via web.archive.org
+2012-13,vehicle,Combined Cooloola & K'gari,Monthly,67.45,QPWS fee pages via web.archive.org
+2012-13,vehicle,Combined Cooloola & K'gari,Annual,338.2,QPWS fee pages via web.archive.org
+2013-14,vehicle,Moreton Island,Monthly,43.6,QPWS fee pages via web.archive.org
+2013-14,vehicle,Moreton Island,Annual,218.7,QPWS fee pages via web.archive.org
+2013-14,vehicle,K'gari (Fraser Island),Monthly,43.6,QPWS fee pages via web.archive.org
+2013-14,vehicle,K'gari (Fraser Island),Annual,218.7,QPWS fee pages via web.archive.org
+2013-14,vehicle,Bribie Island,Weekly,41.75,QPWS fee pages via web.archive.org
+2013-14,vehicle,Bribie Island,Annual,130.4,QPWS fee pages via web.archive.org
+2013-14,vehicle,Cooloola,Daily (online),11.05,QPWS fee pages via web.archive.org
+2013-14,vehicle,Cooloola,Daily (counter),16.55,QPWS fee pages via web.archive.org
+2013-14,vehicle,Cooloola,Weekly,27.7,QPWS fee pages via web.archive.org
+2013-14,vehicle,Cooloola,Monthly,43.6,QPWS fee pages via web.archive.org
+2013-14,vehicle,Cooloola,Annual,218.7,QPWS fee pages via web.archive.org
+2013-14,vehicle,Combined Cooloola & K'gari,Monthly,69.8,QPWS fee pages via web.archive.org
+2013-14,vehicle,Combined Cooloola & K'gari,Annual,350.0,QPWS fee pages via web.archive.org
+2014-15,vehicle,Moreton Island,Monthly,45.1,QPWS fee pages via web.archive.org
+2014-15,vehicle,Moreton Island,Annual,226.3,QPWS fee pages via web.archive.org
+2014-15,vehicle,K'gari (Fraser Island),Monthly,45.1,QPWS fee pages via web.archive.org
+2014-15,vehicle,K'gari (Fraser Island),Annual,226.3,QPWS fee pages via web.archive.org
+2014-15,vehicle,Bribie Island,Weekly,43.2,QPWS fee pages via web.archive.org
+2014-15,vehicle,Bribie Island,Annual,134.9,QPWS fee pages via web.archive.org
+2014-15,vehicle,Cooloola,Daily (online),11.4,QPWS fee pages via web.archive.org
+2014-15,vehicle,Cooloola,Daily (counter),17.1,QPWS fee pages via web.archive.org — counter rate not legible in snapshot; estimated from the online/counter ratio of adjacent years
+2014-15,vehicle,Cooloola,Weekly,28.65,QPWS fee pages via web.archive.org
+2014-15,vehicle,Cooloola,Monthly,45.1,QPWS fee pages via web.archive.org
+2014-15,vehicle,Cooloola,Annual,226.3,QPWS fee pages via web.archive.org
+2014-15,vehicle,Combined Cooloola & K'gari,Monthly,72.2,QPWS fee pages via web.archive.org
+2014-15,vehicle,Combined Cooloola & K'gari,Annual,362.2,QPWS fee pages via web.archive.org
+2015-16,vehicle,Moreton Island,Monthly,46.65,QPWS fee pages via web.archive.org
+2015-16,vehicle,Moreton Island,Annual,234.0,QPWS fee pages via web.archive.org
+2015-16,vehicle,K'gari (Fraser Island),Monthly,46.65,QPWS fee pages via web.archive.org
+2015-16,vehicle,K'gari (Fraser Island),Annual,234.0,QPWS fee pages via web.archive.org
+2015-16,vehicle,Bribie Island,Weekly,44.7,QPWS fee pages via web.archive.org
+2015-16,vehicle,Bribie Island,Annual,139.6,QPWS fee pages via web.archive.org
+2015-16,vehicle,Cooloola,Daily (online),11.75,QPWS fee pages via web.archive.org
+2015-16,vehicle,Cooloola,Daily (counter),17.7,QPWS fee pages via web.archive.org — counter rate not legible in snapshot; estimated from the online/counter ratio of adjacent years
+2015-16,vehicle,Cooloola,Weekly,29.65,QPWS fee pages via web.archive.org
+2015-16,vehicle,Cooloola,Monthly,46.65,QPWS fee pages via web.archive.org
+2015-16,vehicle,Cooloola,Annual,234.0,QPWS fee pages via web.archive.org
+2015-16,vehicle,Combined Cooloola & K'gari,Monthly,74.7,QPWS fee pages via web.archive.org
+2015-16,vehicle,Combined Cooloola & K'gari,Annual,374.8,QPWS fee pages via web.archive.org
+2016-17,vehicle,Moreton Island,Monthly,48.25,QPWS fee pages via web.archive.org
+2016-17,vehicle,Moreton Island,Annual,242.1,QPWS fee pages via web.archive.org
+2016-17,vehicle,K'gari (Fraser Island),Monthly,48.25,QPWS fee pages via web.archive.org
+2016-17,vehicle,K'gari (Fraser Island),Annual,242.1,QPWS fee pages via web.archive.org
+2016-17,vehicle,Bribie Island,Weekly,46.25,QPWS fee pages via web.archive.org
+2016-17,vehicle,Bribie Island,Annual,144.4,QPWS fee pages via web.archive.org
+2016-17,vehicle,Cooloola,Daily (online),12.15,QPWS fee pages via web.archive.org
+2016-17,vehicle,Cooloola,Daily (counter),18.25,QPWS fee pages via web.archive.org
+2016-17,vehicle,Cooloola,Weekly,30.65,QPWS fee pages via web.archive.org
+2016-17,vehicle,Cooloola,Monthly,48.25,QPWS fee pages via web.archive.org
+2016-17,vehicle,Cooloola,Annual,242.1,QPWS fee pages via web.archive.org
+2016-17,vehicle,Combined Cooloola & K'gari,Monthly,77.3,QPWS fee pages via web.archive.org
+2016-17,vehicle,Combined Cooloola & K'gari,Annual,387.9,QPWS fee pages via web.archive.org
+2017-18,vehicle,Moreton Island,Monthly,49.9,QPWS fee pages via web.archive.org
+2017-18,vehicle,Moreton Island,Annual,250.8,QPWS fee pages via web.archive.org
+2017-18,vehicle,K'gari (Fraser Island),Monthly,49.9,QPWS fee pages via web.archive.org
+2017-18,vehicle,K'gari (Fraser Island),Annual,250.8,QPWS fee pages via web.archive.org
+2017-18,vehicle,Bribie Island,Weekly,47.85,QPWS fee pages via web.archive.org
+2017-18,vehicle,Bribie Island,Annual,149.4,QPWS fee pages via web.archive.org
+2017-18,vehicle,Cooloola,Daily (online),12.55,QPWS fee pages via web.archive.org
+2017-18,vehicle,Cooloola,Daily (counter),18.9,QPWS fee pages via web.archive.org — counter rate not legible in snapshot; estimated from the online/counter ratio of adjacent years
+2017-18,vehicle,Cooloola,Weekly,31.7,QPWS fee pages via web.archive.org
+2017-18,vehicle,Cooloola,Monthly,49.9,QPWS fee pages via web.archive.org
+2017-18,vehicle,Cooloola,Annual,250.8,QPWS fee pages via web.archive.org
+2017-18,vehicle,Combined Cooloola & K'gari,Monthly,80.0,QPWS fee pages via web.archive.org
+2017-18,vehicle,Combined Cooloola & K'gari,Annual,401.4,QPWS fee pages via web.archive.org
+2018-19,vehicle,Moreton Island,Monthly,51.6,QPWS fee pages via web.archive.org
+2018-19,vehicle,Moreton Island,Annual,259.5,QPWS fee pages via web.archive.org
+2018-19,vehicle,K'gari (Fraser Island),Monthly,51.6,QPWS fee pages via web.archive.org
+2018-19,vehicle,K'gari (Fraser Island),Annual,259.5,QPWS fee pages via web.archive.org
+2018-19,vehicle,Bribie Island,Weekly,49.5,QPWS fee pages via web.archive.org
+2018-19,vehicle,Bribie Island,Annual,154.6,QPWS fee pages via web.archive.org
+2018-19,vehicle,Cooloola,Daily (online),12.95,QPWS fee pages via web.archive.org
+2018-19,vehicle,Cooloola,Daily (counter),19.5,QPWS fee pages via web.archive.org
+2018-19,vehicle,Cooloola,Weekly,32.8,QPWS fee pages via web.archive.org
+2018-19,vehicle,Cooloola,Monthly,51.6,QPWS fee pages via web.archive.org
+2018-19,vehicle,Cooloola,Annual,259.5,QPWS fee pages via web.archive.org
+2018-19,vehicle,Combined Cooloola & K'gari,Monthly,82.8,QPWS fee pages via web.archive.org
+2018-19,vehicle,Combined Cooloola & K'gari,Annual,415.4,QPWS fee pages via web.archive.org
+2019-20,vehicle,Moreton Island,Monthly,52.75,QPWS fee pages via web.archive.org
+2019-20,vehicle,Moreton Island,Annual,265.3,QPWS fee pages via web.archive.org
+2019-20,vehicle,K'gari (Fraser Island),Monthly,52.75,QPWS fee pages via web.archive.org
+2019-20,vehicle,K'gari (Fraser Island),Annual,265.3,QPWS fee pages via web.archive.org
+2019-20,vehicle,Bribie Island,Weekly,50.6,QPWS fee pages via web.archive.org
+2019-20,vehicle,Bribie Island,Annual,158.0,QPWS fee pages via web.archive.org
+2019-20,vehicle,Cooloola,Daily (online),13.2,QPWS fee pages via web.archive.org
+2019-20,vehicle,Cooloola,Daily (counter),19.9,QPWS fee pages via web.archive.org
+2019-20,vehicle,Cooloola,Weekly,33.5,QPWS fee pages via web.archive.org
+2019-20,vehicle,Cooloola,Monthly,52.75,QPWS fee pages via web.archive.org
+2019-20,vehicle,Cooloola,Annual,265.3,QPWS fee pages via web.archive.org
+2019-20,vehicle,Combined Cooloola & K'gari,Monthly,84.65,QPWS fee pages via web.archive.org
+2019-20,vehicle,Combined Cooloola & K'gari,Annual,424.7,QPWS fee pages via web.archive.org
+2020-21,vehicle,Moreton Island,Monthly,53.65,QPWS fee pages via web.archive.org
+2020-21,vehicle,Moreton Island,Annual,270.0,QPWS fee pages via web.archive.org
+2020-21,vehicle,K'gari (Fraser Island),Monthly,53.65,QPWS fee pages via web.archive.org
+2020-21,vehicle,K'gari (Fraser Island),Annual,270.0,QPWS fee pages via web.archive.org
+2020-21,vehicle,Bribie Island,Weekly,51.5,QPWS fee pages via web.archive.org
+2020-21,vehicle,Bribie Island,Annual,160.8,QPWS fee pages via web.archive.org
+2020-21,vehicle,Cooloola,Daily (online),13.4,QPWS fee pages via web.archive.org
+2020-21,vehicle,Cooloola,Daily (counter),20.25,QPWS fee pages via web.archive.org
+2020-21,vehicle,Cooloola,Weekly,34.1,QPWS fee pages via web.archive.org
+2020-21,vehicle,Cooloola,Monthly,53.65,QPWS fee pages via web.archive.org
+2020-21,vehicle,Cooloola,Annual,270.0,QPWS fee pages via web.archive.org
+2020-21,vehicle,Combined Cooloola & K'gari,Monthly,86.15,QPWS fee pages via web.archive.org
+2020-21,vehicle,Combined Cooloola & K'gari,Annual,432.3,QPWS fee pages via web.archive.org
+2021-22,vehicle,Moreton Island,Monthly,54.55,QPWS fee pages via web.archive.org
+2021-22,vehicle,Moreton Island,Annual,274.5,QPWS fee pages via web.archive.org
+2021-22,vehicle,K'gari (Fraser Island),Monthly,54.55,QPWS fee pages via web.archive.org
+2021-22,vehicle,K'gari (Fraser Island),Annual,274.5,QPWS fee pages via web.archive.org
+2021-22,vehicle,Bribie Island,Weekly,52.35,QPWS fee pages via web.archive.org
+2021-22,vehicle,Bribie Island,Annual,163.5,QPWS fee pages via web.archive.org
+2021-22,vehicle,Cooloola,Daily (online),13.6,QPWS fee pages via web.archive.org
+2021-22,vehicle,Cooloola,Daily (counter),20.55,QPWS fee pages via web.archive.org
+2021-22,vehicle,Cooloola,Weekly,34.65,QPWS fee pages via web.archive.org
+2021-22,vehicle,Cooloola,Monthly,54.55,QPWS fee pages via web.archive.org
+2021-22,vehicle,Cooloola,Annual,274.5,QPWS fee pages via web.archive.org
+2021-22,vehicle,Combined Cooloola & K'gari,Monthly,87.6,QPWS fee pages via web.archive.org
+2021-22,vehicle,Combined Cooloola & K'gari,Annual,439.6,QPWS fee pages via web.archive.org
+2022-23,vehicle,K'gari (Fraser Island),Monthly,55.9,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,K'gari (Fraser Island),Annual,281.4,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Bribie Island,Weekly,53.65,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Bribie Island,Annual,167.6,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Cooloola,Daily (online),13.95,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Cooloola,Daily (counter),21.05,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Cooloola,Weekly,35.5,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Cooloola,Monthly,55.9,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Cooloola,Annual,281.4,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Combined Cooloola & K'gari,Monthly,89.8,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2022-23,vehicle,Combined Cooloola & K'gari,Annual,450.6,QPWS fee pages via web.archive.org + QP Question on Notice 1010/2023
+2023-24,vehicle,K'gari (Fraser Island),Monthly,57.8,QPWS fee pages via web.archive.org
+2023-24,vehicle,K'gari (Fraser Island),Annual,291.0,QPWS fee pages via web.archive.org
+2023-24,vehicle,Bribie Island,Weekly,55.5,QPWS fee pages via web.archive.org
+2023-24,vehicle,Bribie Island,Annual,173.3,QPWS fee pages via web.archive.org
+2023-24,vehicle,Cooloola,Daily (online),14.4,QPWS fee pages via web.archive.org
+2023-24,vehicle,Cooloola,Daily (counter),21.8,QPWS fee pages via web.archive.org
+2023-24,vehicle,Cooloola,Weekly,36.75,QPWS fee pages via web.archive.org
+2023-24,vehicle,Cooloola,Monthly,57.8,QPWS fee pages via web.archive.org
+2023-24,vehicle,Cooloola,Annual,291.0,QPWS fee pages via web.archive.org
+2023-24,vehicle,Combined Cooloola & K'gari,Monthly,92.85,QPWS fee pages via web.archive.org
+2023-24,vehicle,Combined Cooloola & K'gari,Annual,466.0,QPWS fee pages via web.archive.org
+2024-25,vehicle,K'gari (Fraser Island),Monthly,57.8,QPWS fee pages via web.archive.org
+2024-25,vehicle,K'gari (Fraser Island),Annual,291.0,QPWS fee pages via web.archive.org
+2024-25,vehicle,Bribie Island,Weekly,55.5,QPWS fee pages via web.archive.org
+2024-25,vehicle,Bribie Island,Annual,173.3,QPWS fee pages via web.archive.org
+2024-25,vehicle,Cooloola,Daily (online),14.4,QPWS fee pages via web.archive.org
+2024-25,vehicle,Cooloola,Daily (counter),21.8,QPWS fee pages via web.archive.org
+2024-25,vehicle,Cooloola,Weekly,36.75,QPWS fee pages via web.archive.org
+2024-25,vehicle,Cooloola,Monthly,57.8,QPWS fee pages via web.archive.org
+2024-25,vehicle,Cooloola,Annual,291.0,QPWS fee pages via web.archive.org
+2024-25,vehicle,Combined Cooloola & K'gari,Monthly,92.85,QPWS fee pages via web.archive.org
+2024-25,vehicle,Combined Cooloola & K'gari,Annual,466.0,QPWS fee pages via web.archive.org
+2025-26,vehicle,K'gari (Fraser Island),Monthly,59.8,QPWS fee pages via web.archive.org
+2025-26,vehicle,K'gari (Fraser Island),Annual,300.9,QPWS fee pages via web.archive.org
+2025-26,vehicle,Bribie Island,Weekly,57.4,QPWS fee pages via web.archive.org
+2025-26,vehicle,Bribie Island,Annual,179.2,QPWS fee pages via web.archive.org
+2025-26,vehicle,Cooloola,Daily (online),14.9,QPWS fee pages via web.archive.org
+2025-26,vehicle,Cooloola,Daily (counter),22.5,QPWS fee pages via web.archive.org
+2025-26,vehicle,Cooloola,Weekly,38.0,QPWS fee pages via web.archive.org
+2025-26,vehicle,Cooloola,Monthly,59.8,QPWS fee pages via web.archive.org
+2025-26,vehicle,Cooloola,Annual,300.9,QPWS fee pages via web.archive.org
+2025-26,vehicle,Combined Cooloola & K'gari,Monthly,96.0,QPWS fee pages via web.archive.org
+2025-26,vehicle,Combined Cooloola & K'gari,Annual,481.8,QPWS fee pages via web.archive.org
+2026-27,vehicle,K'gari (Fraser Island),Monthly,61.8,parks.qld.gov.au (live)
+2026-27,vehicle,K'gari (Fraser Island),Annual,311.0,parks.qld.gov.au (live)
+2026-27,vehicle,Bribie Island,Weekly,59.3,parks.qld.gov.au (live)
+2026-27,vehicle,Bribie Island,Annual,185.2,parks.qld.gov.au (live)
+2026-27,vehicle,Cooloola,Daily (online),15.4,parks.qld.gov.au (live)
+2026-27,vehicle,Cooloola,Daily (counter),23.3,parks.qld.gov.au (live)
+2026-27,vehicle,Cooloola,Weekly,39.25,parks.qld.gov.au (live)
+2026-27,vehicle,Cooloola,Monthly,61.8,parks.qld.gov.au (live)
+2026-27,vehicle,Cooloola,Annual,311.0,parks.qld.gov.au (live)
+2026-27,vehicle,Combined Cooloola & K'gari,Monthly,99.25,parks.qld.gov.au (live)
+2026-27,vehicle,Combined Cooloola & K'gari,Annual,498.1,parks.qld.gov.au (live)
