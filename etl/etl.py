@@ -460,7 +460,7 @@ def main():
     # nightly in-house counts per area (explode bookings into nights), then occupancy vs current capacity
     con.execute("""CREATE OR REPLACE TABLE area_day AS
         WITH nights AS (
-            SELECT b.park, b.area, b.arrival_date + to_days(g.i::INTEGER) AS date, b.people
+            SELECT b.park, b.area, (b.arrival_date + to_days(g.i::INTEGER))::DATE AS date, b.people
             FROM (SELECT park, area, arrival_date, nights, people FROM camping WHERE nights BETWEEN 1 AND 60 AND area IS NOT NULL) b,
                  LATERAL (SELECT unnest(range(0, b.nights)) AS i) g
         ), agg AS (

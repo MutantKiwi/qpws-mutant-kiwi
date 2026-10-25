@@ -1,11 +1,11 @@
 # QPWS permits ETL — data quality report
-_Generated 2026-10-25 16:32_
+_Generated 2026-10-25 17:13_
 
 ## Row counts
 | table | rows | first | last | nights | person_nights |
 |---|---|---|---|---|---|
+| camping | 3,281,358 | 2010-09-21 | 2026-09-30 | 7,541,595 | 20,854,055 |
 | vehicle | 2,792,111 | 2010-04-01 | 2026-09-30 |  |  |
-| camping | 3,281,358 | 2010-09-21 | 2026-09-30 | 7,541,595 | 20,854,052 |
 
 ## Camping rows by era
 | era | rows | first | last |
@@ -25,14 +25,14 @@ _Generated 2026-10-25 16:32_
 | 2,015 | 184,055 | 473,963 | 1,335,948 | 2.58 |
 | 2,016 | 206,906 | 502,662 | 1,455,764 | 2.43 |
 | 2,017 | 211,420 | 501,289 | 1,464,907 | 2.37 |
-| 2,018 | 235,327 | 540,888 | 1,551,229 | 2.3 |
+| 2,018 | 235,327 | 540,888 | 1,551,238 | 2.3 |
 | 2,019 | 219,314 | 499,306 | 1,420,734 | 2.28 |
-| 2,020 | 206,496 | 425,935 | 1,183,976 | 2.06 |
+| 2,020 | 206,496 | 425,935 | 1,183,977 | 2.06 |
 | 2,021 | 283,695 | 619,823 | 1,663,654 | 2.18 |
 | 2,022 | 255,815 | 549,690 | 1,497,393 | 2.15 |
 | 2,023 | 262,763 | 552,734 | 1,476,990 | 2.1 |
 | 2,024 | 234,965 | 489,513 | 1,269,613 | 2.08 |
-| 2,025 | 233,818 | 477,028 | 1,163,356 | 2.04 |
+| 2,025 | 233,818 | 477,028 | 1,163,349 | 2.04 |
 | 2,026 | 178,675 | 351,359 | 836,143 | 1.97 |
 
 ## Vehicle permits by year
@@ -97,8 +97,8 @@ _Generated 2026-10-25 16:32_
 | Bribie Island | Weekly | Fee exempt | 27 |
 | Moreton Island | Daily | Fee exempt | 21 |
 | Bribie Island | Monthly | Fee exempt | 20 |
-| Bribie Island | Daily | Fee exempt | 9 |
 | Combined Cooloola & K'gari | Monthly | Educational | 9 |
+| Bribie Island | Daily | Fee exempt | 9 |
 | Bribie Island | Weekly | Educational | 5 |
 | Bribie Island | Monthly | Standard | 4 |
 | Combined Cooloola & K'gari | Monthly | Fee exempt | 2 |
@@ -121,7 +121,7 @@ _Generated 2026-10-25 16:32_
 | Cooloola Recreation Area | Teewah Beach camping zone 7 | 2 | Teewah Beach camping zone 7 | Teewah Beach camping area |
 | Imbil State Forest | Charlie Moreland camping area | 3 | Charlie Moreland Overflow camping area CLOSED | Charlie Moreland camping area |
 | K'gari (Fraser Island) Recreation Area | Central Station camping area | 14 | Central Station camping area | Central Station (group site)(not for use by SSQ) | Central Station (Tent Site) camping area | Central Station group area | Central Station (trailer site) camping area | Central Station (Trailer Site) camping area | Central Station (tent site) camping area | Central Station group camping area | Central Station (Geat Walk campsites) | Central Station group area (not for use by SSQ) |
-| K'gari (Fraser Island) Recreation Area | Dundubara camping area | 12 | Dundubara (Trailer Site) camping area | Dundubara group camping area | Dundubara tent camping | Dundubara (tent site) camping area | Dundubara camping area | Dundubara group area | Dundubara (trailer site) camping area | Dundubara (Tent Site) camping area |
+| K'gari (Fraser Island) Recreation Area | Dundubara camping area | 12 | Dundubara (Trailer Site) camping area | Dundubara group camping area | Dundubara tent camping | Dundubara (tent site) camping area | Dundubara camping area | Dundubara (trailer site) camping area | Dundubara group area | Dundubara (Tent Site) camping area |
 | K'gari (Fraser Island) Recreation Area | Beach camping zone 8 - Marloo, Ocean Lake, Duling | 3 | Beach camping zone 8 - Marloo, Ocean Lake, Duling |
 | Inskip Peninsula Recreation Area | M.V. Sarawak | 2 | MV Sarawak | M.V. Sarawak |
 | Beerburrum and Beerwah State Forests | Coochin Creek | 2 | Coochin Creek |
@@ -129,7 +129,7 @@ _Generated 2026-10-25 16:32_
 | Girraween National Park | Castle Rock camping area | 9 | Castle Rock camping area trailer or van sites | Castle Rock (tent site) camping area | Castle Rock (trailer/tent site) camping area | Castle Rock camping area | Castle Rock (Trailer Site)camping area | Castle Rock (trailer sites) camping area | Castle Rock camping area tent sites | Castle Rock camping area (PWD sites) | Castle Rock (trailer/tent site) camping areaOLD |
 | Danbulla State Forest | Downfall Creek camping area | 3 | Downfall Creek camping area |
 | Inskip Peninsula Recreation Area | S.S. Dorrigo | 2 | SS Dorrigo | S.S. Dorrigo |
-| Cooloola Recreation Area | Freshwater camping area | 9 | Freshwater (Tent Site) camping area | Freshwater (trailer site) Camping Area | Freshwater camping area (Trailer Sites) | Freshwater Group camping area | Freshwater camping area (Tent Sites) | Freshwater Education camping area | Freshwater camping area | Freshwater (tent site) camping area | Freshwater (trailer site) camping area |
+| Cooloola Recreation Area | Freshwater camping area | 9 | Freshwater (Tent Site) camping area | Freshwater (trailer site) Camping Area | Freshwater camping area (Trailer Sites) | Freshwater Group camping area | Freshwater camping area (Tent Sites) | Freshwater Education camping area | Freshwater camping area | Freshwater (trailer site) camping area | Freshwater (tent site) camping area |
 | Jimna State Forest | Peach Trees camping area | 2 | Peach Trees camping area | Peach Trees Overflow camping area - CLOSED |
 | K'gari (Fraser Island) Recreation Area | Beach camping zone 6 - Eugarie, Yurru, Guruman | 3 | Beach camping zone 6 - Eugarie, Yurru, Guruman |
 | Amamoor State Forest | Cedar Grove camping area | 2 | Cedar Grove camping area |
@@ -251,31 +251,31 @@ _Generated 2026-10-25 16:32_
 | capacity_type | areas | bookings | sites | people_cap |
 |---|---|---|---|---|
 |  | 375 | 642,018 |  |  |
-| sites | 296 | 1,256,811 | 1,813 | 11,414 |
-| people | 214 | 1,382,529 | 12 | 12,474 |
+| sites | 296 | 1,258,120 | 1,813 | 11,414 |
+| people | 214 | 1,381,220 | 12 | 12,474 |
 
 ## Occupancy sanity: area-nights over 100% of cap (expect some — group bookings, config changes)
 | band | area_nights |
 |---|---|
-| 0-50% | 524,159 |
-| 100-150% | 20,392 |
-| 50-90% | 104,324 |
-| 90-100% | 125,009 |
-| >150% | 11,184 |
+| 0-50% | 523,991 |
+| 100-150% | 20,400 |
+| 50-90% | 104,402 |
+| 90-100% | 125,613 |
+| >150% | 11,190 |
 | no cap | 120,332 |
 
 ## State normalisation
 | state | camping_rows |
 |---|---|
-| QLD | 2,618,821 |
+| QLD | 2,618,823 |
 | NSW | 294,276 |
-| VIC | 168,104 |
-|  | 58,453 |
+| VIC | 168,101 |
+|  | 58,452 |
 | WA | 36,937 |
-| SA | 32,930 |
+| SA | 32,932 |
 | OS | 25,076 |
-| TAS | 22,448 |
-| ACT | 15,400 |
+| TAS | 22,449 |
+| ACT | 15,399 |
 | NT | 8,913 |
 
 ## Suspicious values
@@ -286,8 +286,8 @@ _Generated 2026-10-25 16:32_
 | camping lead_days < 0 | 18,927 |
 | camping lead_days > 400 | 569 |
 | vehicle lead_days < 0 | 11,848 |
-| camping postcode null | 87,299 |
-| vehicle postcode null | 45,161 |
+| camping postcode null | 87,302 |
+| vehicle postcode null | 45,178 |
 
 ## Source files: labelled quarter vs arrival-date span
 | file | rows | first_arrival | last_arrival |
@@ -299,8 +299,8 @@ _Generated 2026-10-25 16:32_
 | 2017_Q3_qpws-permits-camping-jul17-sep17.csv | 70,176 | 2017-06-22 | 2017-09-30 |
 | 2017_Q4_qpws-permits-camping-oct17-dec17.csv | 48,923 | 2017-10-01 | 2017-12-31 |
 | 2018_Q1_qpws-permits-camping-jan18-mar18.csv | 45,385 | 2017-12-04 | 2018-03-31 |
-| 2018_Q2_qpws-permits-camping-apr18-jun18.csv | 32,752 | 2018-02-15 | 2018-06-30 |
-| 2018_Q3_qpws-permits-camping-jul18-sep18.csv | 107,218 | 2018-01-20 | 2018-09-30 |
+| 2018_Q2_qpws-permits-camping-apr18-jun18.csv | 36,647 | 2018-02-15 | 2018-06-30 |
+| 2018_Q3_qpws-permits-camping-jul18-sep18.csv | 103,323 | 2018-01-20 | 2018-09-30 |
 | 2018_Q4_qpws-permits-camping-oct18-dec18.csv | 52,826 | 2018-09-08 | 2018-12-31 |
 | 2019_Q1_qpws-permits-camping-jan19-mar19.csv | 39,782 | 2018-12-21 | 2019-03-31 |
 | 2019_Q2_qpws-permits-camping-apr19-jun19.csv | 55,358 | 2019-03-22 | 2019-06-30 |

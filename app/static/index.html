@@ -23,6 +23,7 @@
     <button data-v="map">Map</button>
     <button data-v="charts">Charts</button>
     <button data-v="table">Table</button>
+    <button data-v="plan" class="camp-only-tab">Plan</button>
   </nav>
   <div class="spacer"></div>
   <div class="meta" id="meta"></div>
@@ -119,6 +120,27 @@
     </div>
   </section>
 
+  <!-- PLAN -->
+  <section class="view" id="v-plan">
+    <div class="card">
+      <div class="card-h">
+        <h3>Plan a stay — how busy will it be?</h3>
+        <label>Arrive <input type="date" id="plan-from" class="mini" style="width:auto"></label>
+        <label>Depart <input type="date" id="plan-to" class="mini" style="width:auto"></label>
+        <label>Compare <select id="plan-years" class="mini"><option value="3">last 3 years</option><option value="2">last 2 years</option><option value="5">last 5 years</option></select></label>
+        <button id="plan-go" class="btn">Check</button>
+        <span class="muted" id="plan-note"></span>
+      </div>
+      <div id="plan-empty" class="muted" style="padding:24px 0">Pick a <b>park or campground</b> in the filter bar (search box or “+ Park”), choose future dates, then <b>Check</b>. Each night is matched to the equivalent night in earlier years — the same public holiday, the same day of the same school-holiday period, or otherwise the same weekday — and shows how full the selection was then. Dates up to December 2029 are covered.</div>
+      <div id="plan-body" hidden>
+        <div class="kpis" id="plan-kpis" style="margin-bottom:10px"></div>
+        <div class="chart tall" id="ch-plan"></div>
+        <div class="card-h" style="margin-top:10px"><h3>Night by night</h3><span class="muted">occupancy on the equivalent night in each prior year · ≥90% counts as full</span></div>
+        <div id="plan-table"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- TABLE -->
   <section class="view" id="v-table">
     <div class="card">
@@ -128,7 +150,7 @@
   </section>
 </main>
 
-<footer class="foot">Source: QPWS camping and vehicle access permit exports 2011–2026 (DETSI). Bookings = one row per camping reservation; vehicle permits = one row per permit. Camping-area coordinates from the Queensland National Parks Booking Service; postcode centroids ABS/Australia Post. Day types use Queensland public holidays and Queensland state-school term dates (education.qld.gov.au); a day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend. Figures for the current quarter are partial. v1.1</footer>
+<footer class="foot">Source: QPWS camping and vehicle access permit exports 2011–2026 (DETSI). Bookings = one row per camping reservation; vehicle permits = one row per permit. Camping-area coordinates from the Queensland National Parks Booking Service; postcode centroids ABS/Australia Post. Day types use Queensland public holidays and Queensland state-school term dates (education.qld.gov.au); a day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend. Figures for the current quarter are partial.</footer>
 
 <script src="/static/vendor/maplibre-gl.js"></script>
 <script src="/static/vendor/echarts.min.js"></script>

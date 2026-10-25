@@ -301,6 +301,130 @@ def occupancy_daytype(request: Request, basis: Literal["auto", "sites", "people"
     return q(f"""SELECT {key} AS key, count(*) area_nights, round(avg({col}),1) avg_occ,
         round(100.0*sum(CASE WHEN {col} >= 90 THEN 1 ELSE 0 END)/count(*),1) pct_full FROM area_day WHERE {w} GROUP BY 1 ORDER BY avg_occ DESC""", p)
 
+# ---- plan ahead: future window vs equivalent nights in prior years ---------------------------------
+from datetime import timedelta
+_cal_cache: dict = {}
+def _calendar() -> dict:
+    """date -> calendar row, loaded once."""
+    if not _cal_cache:
+        for r in q("SELECT * FROM calendar"):
+            _cal_cache[r["date"]] = r
+    return _cal_cache
+
+def _holiday_periods() -> list[dict]:
+    rows = q("""WITH x AS (SELECT date, school_holiday, date - to_days(row_number() OVER (PARTITION BY school_holiday ORDER BY date)::INTEGER) AS grp
+                           FROM calendar WHERE is_school_holiday)
+                SELECT school_holiday AS name, min(date) AS start, max(date) AS "end" FROM x GROUP BY school_holiday, grp ORDER BY start""")
+    return rows
+
+def _match_prior(d: date, years_back: int, cal: dict, periods: list[dict]) -> list[tuple[int, date, str]]:
+    """For target day d, return [(years_ago, matched_date, rule)] for 1..years_back."""
+    out = []
+    row = cal.get(d)
+    period = next((p for p in periods if p["start"] <= d <= p["end"]), None)
+    for n in range(1, years_back + 1):
+        m, rule = None, None
+        # 1. same named public holiday (Good Friday, Easter Monday, King's Birthday...) - the strongest anchor
+        if row and row.get("is_public_holiday"):
+            name = row["public_holiday"]
+            for dd in sorted(range(-36, 37), key=abs):
+                c = date(d.year - n, d.month, min(d.day, 28)) + timedelta(days=dd)
+                if cal.get(c, {}).get("public_holiday") == name:
+                    m, rule = c, name; break
+        # 2. a day of a long weekend: keep position relative to its public holiday
+        if m is None and row and row.get("is_long_weekend") and not row.get("is_public_holiday"):
+            for off in (1, 2, 3, -1, -2, -3):
+                r2 = cal.get(d + timedelta(days=off), {})
+                if r2.get("is_public_holiday"):
+                    name = r2["public_holiday"]
+                    for dd in sorted(range(-36, 37), key=abs):
+                        c = date(d.year - n, d.month, min(d.day, 28)) + timedelta(days=dd)
+                        if cal.get(c, {}).get("public_holiday") == name:
+                            m, rule = c - timedelta(days=off), f"{name} long weekend"; break
+                    if m: break
+        # 3. same offset into the same named school-holiday period n years earlier
+        if m is None and period:
+            k = (d - period["start"]).days
+            cands = [p for p in periods if p["name"] == period["name"] and p["start"].year == period["start"].year - n]
+            if cands:
+                m, rule = cands[0]["start"] + timedelta(days=k), f"{period['name']} holidays day {k+1}"
+        # 4. same weekday nearest the anniversary
+        if m is None:
+            anniv = date(d.year - n, d.month, min(d.day, 28))
+            shift = (d.weekday() - anniv.weekday())
+            if shift > 3: shift -= 7
+            if shift < -3: shift += 7
+            m, rule = anniv + timedelta(days=shift), "same weekday"
+        out.append((n, m, rule))
+    return out
+
+@app.get("/api/plan")
+def plan(request: Request, arrival: date, departure: date, years: int = Query(3, ge=1, le=10), basis: Literal["auto", "sites", "people"] = "auto"):
+    """Future stay vs equivalent nights in prior years, for the park/area in the filters."""
+    f = parse_filters(request)
+    if departure <= arrival: raise HTTPException(400, "departure must be after arrival")
+    if (departure - arrival).days > 60: raise HTTPException(400, "window limited to 60 nights")
+    cal, periods = _calendar(), _holiday_periods()
+    col = OCC_BASIS[basis]
+    nights = [arrival + timedelta(days=i) for i in range((departure - arrival).days)]
+    matches = {d: _match_prior(d, years, cal, periods) for d in nights}
+    all_dates = sorted({m for ms in matches.values() for _, m, _ in ms})
+    # area-level occupancy for the matched dates, honouring park/area/q filters
+    w, p = ["date IN (" + ",".join("?" * len(all_dates)) + ")"], list(all_dates)
+    for colname, vals in (("park", f.park), ("area", f.area)):
+        if vals: w.append(f"{colname} IN ({','.join('?'*len(vals))})"); p.extend(vals)
+    if f.q: w.append("(park ILIKE ? OR area ILIKE ?)"); p += [f"%{f.q}%", f"%{f.q}%"]
+    hist = q(f"""SELECT date, count(*) areas_with_guests, round(avg({col}),1) occ, max({col}) occ_max, sum(bookings_in_house) bookings_in_house, sum(people_in_house) people_in_house,
+                 sum(CASE WHEN {col} >= 90 THEN 1 ELSE 0 END) areas_full FROM area_day WHERE {' AND '.join(w)} GROUP BY date""", p)
+    hist = {r["date"]: r for r in hist}
+    data_end = q("SELECT max(arrival_date) d FROM camping")[0]["d"]
+    for d in nights:  # matched dates beyond the data -> no data (not zero)
+        matches[d] = [(n, m, rule) for n, m, rule in matches[d] if m <= data_end]
+    # capacity of the selection (sum over selected areas)
+    cw, cp = ["1=1"], []
+    for colname, vals in (("park", f.park), ("area", f.area)):
+        if vals: cw.append(f"{colname} IN ({','.join('?'*len(vals))})"); cp.extend(vals)
+    cap = q(f"SELECT count(*) areas, sum(sites_cap) sites_cap, sum(people_cap) people_cap, count(capacity_type) areas_with_cap FROM areas WHERE {' AND '.join(cw)}", cp)[0]
+    out_nights = []
+    for d in nights:
+        c = cal.get(d, {})
+        prior = []
+        for n, m, rule in matches[d]:
+            h = hist.get(m)
+            prior.append({"years_ago": n, "date": m, "rule": rule, "day_type": cal.get(m, {}).get("day_type"),
+                          "occ": h["occ"] if h else None, "occ_max": h["occ_max"] if h else None,
+                          "bookings_in_house": h["bookings_in_house"] if h else 0, "people_in_house": h["people_in_house"] if h else 0,
+                          "areas_full": h["areas_full"] if h else 0, "areas_with_guests": h["areas_with_guests"] if h else 0})
+        occs = [x["occ"] for x in prior if x["occ"] is not None]
+        out_nights.append({"date": d, "dow": d.strftime("%a"), "day_type": c.get("day_type"), "school_holiday": c.get("school_holiday"),
+                           "public_holiday": c.get("public_holiday"), "is_long_weekend": c.get("is_long_weekend"),
+                           "avg_occ": round(sum(occs) / len(occs), 1) if occs else None, "max_occ": max(occs) if occs else None,
+                           "years_full": sum(1 for x in prior if (x["occ"] or 0) >= 90), "prior": prior})
+    per_year = []
+    for n in range(1, years + 1):
+        rows = [x for d in nights for x in matches[d] if x[0] == n]
+        hs = [hist.get(m) for _, m, _ in rows]
+        occs = [h["occ"] for h in hs if h and h["occ"] is not None]
+        per_year.append({"years_ago": n, "year": arrival.year - n, "nights": len(rows), "avg_occ": round(sum(occs)/len(occs), 1) if occs else None,
+                         "nights_full": sum(1 for h in hs if h and (h["occ"] or 0) >= 90),
+                         "avg_people_in_house": round(sum(h["people_in_house"] for h in hs if h) / max(1, len(rows)), 1),
+                         "avg_bookings_in_house": round(sum(h["bookings_in_house"] for h in hs if h) / max(1, len(rows)), 1)})
+    return {"arrival": arrival, "departure": departure, "nights": out_nights, "per_year": [y for y in per_year if y["nights"]], "capacity": cap,
+            "data_end": data_end, "selection": {"park": f.park, "area": f.area}}
+
+@app.get("/api/occupancy/inhouse")
+def occupancy_inhouse(request: Request, grain: Literal["day", "week", "month", "quarter", "year"] = "month"):
+    """Nightly in-house bookings/people for the selected area(s), aggregated per period (avg + max), with capacity."""
+    f = parse_filters(request); w, p = occ_where(f)
+    w = w.replace("occ_pct IS NOT NULL", "1=1")
+    rows = q(f"""SELECT date_trunc('{grain}', date) AS period, round(avg(bookings_in_house),1) avg_bookings, max(bookings_in_house) max_bookings,
+                 round(avg(people_in_house),1) avg_people, max(people_in_house) max_people FROM area_day WHERE {w} GROUP BY 1 ORDER BY 1""", p)
+    cw, cp = ["1=1"], []
+    for colname, vals in (("park", f.park), ("area", f.area)):
+        if vals: cw.append(f"{colname} IN ({','.join('?'*len(vals))})"); cp.extend(vals)
+    cap = q(f"SELECT any_value(capacity_type) capacity_type, sum(sites_cap) sites_cap, sum(people_cap) people_cap, count(*) areas FROM areas WHERE {' AND '.join(cw)}", cp)[0]
+    return {"rows": rows, "capacity": cap}
+
 @app.get("/api/map/areas")
 def map_areas(request: Request, metric: str = None):
     f = parse_filters(request); f.dataset = "camping"; w, p = f.where()

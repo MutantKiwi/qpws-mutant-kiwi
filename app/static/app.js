@@ -4,7 +4,12 @@
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const fmt = n => n == null ? '–' : (Math.abs(n) >= 1e6 ? (n/1e6).toFixed(2)+'M' : Math.abs(n) >= 1e4 ? (n/1e3).toFixed(1)+'k' : Number.isInteger(n) ? n.toLocaleString() : (+n).toLocaleString(undefined,{maximumFractionDigits:2}));
 const fmtFull = n => n == null ? '–' : (+n).toLocaleString();
-const PAL = ['#1f6f4a','#c8742b','#2d5fa8','#8a5fb3','#b8a12b','#c23c5c','#2aa198','#7f8c8d','#9b6f3b','#4f7f3a'];
+const PAL_PARK = ['#1f6f4a','#c8742b','#2d5fa8','#8a5fb3','#b8a12b','#c23c5c','#2aa198','#7f8c8d','#9b6f3b','#4f7f3a'];
+const PAL_AREA = ['#c8742b','#1f6f4a','#2d5fa8','#8a5fb3','#b8a12b','#c23c5c','#2aa198','#7f8c8d','#9b6f3b','#4f7f3a'];
+let PAL = PAL_PARK;
+const TENT = '\u26FA';
+const selKind = () => (S.dataset === 'camping' && S.area.length) ? 'area' : (S.park.length ? 'park' : 'none');
+const selLabel = () => selKind() === 'area' ? `${TENT} ${S.area.join(', ')}` : selKind() === 'park' ? S.park.join(', ') : '';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const LABEL = {bookings:'Bookings', nights:'Nights', person_nights:'Person-nights', people:'People', avg_nights:'Avg nights', avg_people:'Avg party size', avg_lead_days:'Avg lead days',
@@ -18,7 +23,7 @@ const VEH_AREAS = {'Cooloola':[153.15,-26.00],"K'gari (Fraser Island)":[153.10,-
 // ------------------------------------------------------------------ state
 const S = {dataset:'camping', view:'overview', from:'', to:'', state:[], park:[], area:[], postcode:[], duration:[], daytype:[], holiday:[], q:'', mapMode:'areas'};
 let META = null;
-const dirty = {overview:true, map:true, charts:true, table:true};
+const dirty = {overview:true, map:true, charts:true, table:true, plan:true};
 
 function readHash(){
   const h = new URLSearchParams(location.hash.slice(1));
@@ -58,6 +63,9 @@ function multiVals(sel){ return [...sel.selectedOptions].map(o => o.value); }
 
 function syncControls(){
   document.body.dataset.ds = S.dataset;
+  document.body.dataset.sel = selKind();
+  PAL = selKind() === 'area' ? PAL_AREA : PAL_PARK;
+  $$('.view .card-h h3').forEach(h => { const base = h.dataset.base || (h.dataset.base = h.textContent); h.textContent = base; });
   $$('#dataset button').forEach(b => b.classList.toggle('on', b.dataset.v === S.dataset));
   $$('#views button').forEach(b => b.classList.toggle('on', b.dataset.v === S.view));
   $$('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + S.view));
@@ -96,11 +104,12 @@ function syncControls(){
   S.state.forEach(v => chips.push(['state', v, 'State: ' + v]));
   S.postcode.forEach(v => chips.push(['postcode', v, 'Postcode ' + v]));
   S.park.forEach(v => chips.push(['park', v, v]));
-  S.area.forEach(v => chips.push(['area', v, v]));
+  S.area.forEach(v => chips.push(['area', v, S.dataset === 'camping' ? v : v]));
   S.duration.forEach(v => chips.push(['duration', v, v]));
   S.daytype.forEach(v => chips.push(['daytype', v, v]));
   S.holiday.forEach(v => chips.push(['holiday', v, v + ' holidays']));
-  $('#chips').innerHTML = chips.map(([k,v,t]) => `<span class="chip">${esc(t)}<b data-k="${k}" data-v="${esc(v)}">✕</b></span>`).join('');
+  $('#chips').innerHTML = chips.map(([k,v,t]) => `<span class="chip ${k === 'area' && S.dataset === 'camping' ? 'area' : k === 'park' ? 'park' : ''}">${esc(t)}<b data-k="${k}" data-v="${esc(v)}">✕</b></span>`).join('');
+  document.title = (selLabel() ? selLabel() + ' · ' : '') + 'QPWS Permits Explorer';
   $('#export').href = `/api/export.csv?${filterParams()}`;
   const m = META[S.dataset];
   $('#meta').textContent = `${fmtFull(m.rows)} ${camp?'bookings':'permits'} · ${m.date_min} → ${m.date_max}`;
@@ -114,7 +123,7 @@ function changed(opts = {}){
 function render(){
   if (!dirty[S.view]) return;
   dirty[S.view] = false;
-  ({overview: renderOverview, map: renderMap, charts: renderCharts, table: renderTable})[S.view]();
+  ({overview: renderOverview, map: renderMap, charts: renderCharts, table: renderTable, plan: renderPlan})[S.view]();
 }
 
 // ------------------------------------------------------------------ charts (ECharts)
@@ -192,9 +201,22 @@ async function renderCharts(){
   if (by) {
     const groups = [...new Set(ts.map(r => r.grp))];
     series = groups.map(g => ({type:'line', name:g, showSymbol:false, stack: metric.startsWith('avg') ? undefined : 'a', areaStyle: metric.startsWith('avg') ? undefined : {opacity:.5}, lineStyle:{width:1}, data: ts.filter(r => r.grp === g).map(r => [r.period, r.value])}));
-  } else series = [{type: grain === 'year' || grain === 'quarter' ? 'bar' : 'line', name:L(metric), showSymbol:false, areaStyle:{opacity:.12}, data: ts.map(r => [r.period, r.value])}];
+  } else series = [{type: grain === 'year' || grain === 'quarter' ? 'bar' : 'line', name: (selKind() === 'area' ? TENT + ' ' : '') + L(metric), showSymbol:false, areaStyle:{opacity:.12}, data: ts.map(r => [r.period, r.value])}];
   series[0].markArea = markArea; series[0].markLine = markLine;
-  chart('#ch-ts').setOption({...baseOpt(), legend:{type:'scroll', top:0}, grid:{left:48,right:16,top:40,bottom:48,containLabel:true}, xAxis:{type:'time'}, yAxis:{type:'value', axisLabel:{formatter:fmt}}, series,
+  // single campground selected: overlay nightly in-house vs capacity on a second axis
+  let yAxes = {type:'value', axisLabel:{formatter:fmt}};
+  if (camp && S.area.length === 1) {
+    const ih = await api('occupancy/inhouse', {grain: grain === 'day' ? 'day' : grain === 'week' ? 'week' : grain === 'year' || grain === 'quarter' ? grain : 'month'});
+    const c = ih.capacity || {}, byPeople = c.capacity_type === 'people';
+    const cap = byPeople ? c.people_cap : c.sites_cap;
+    const capLabel = cap ? (byPeople ? `Capacity ${fmtFull(cap)} people` : `Capacity ${fmtFull(cap)} sites`) : null;
+    yAxes = [yAxes, {type:'value', name: byPeople ? 'people in house / night' : 'sites occupied / night', nameTextStyle:{fontSize:10}, axisLabel:{formatter:fmt}, splitLine:{show:false},
+                     max: v => cap ? Math.max(v.max, cap) * 1.05 : undefined}];
+    series.push({type:'line', name: `${TENT} ${byPeople ? 'people' : 'sites'} in house (avg/night)`, yAxisIndex:1, showSymbol:false, lineStyle:{width:1.5}, color:'#2d5fa8', data: ih.rows.map(r => [r.period, byPeople ? r.avg_people : r.avg_bookings])});
+    series.push({type:'line', name: `${TENT} peak night`, yAxisIndex:1, showSymbol:false, lineStyle:{width:1, type:'dotted'}, color:'#8a5fb3', data: ih.rows.map(r => [r.period, byPeople ? r.max_people : r.max_bookings])});
+    if (cap) series[series.length-1].markLine = {silent:true, symbol:'none', lineStyle:{color:'#c23c5c', type:'dashed', width:1.5}, label:{formatter: capLabel, position:'insideEndTop', color:'#c23c5c'}, data:[{yAxis: cap}]};
+  }
+  chart('#ch-ts').setOption({...baseOpt(), legend:{type:'scroll', top:0}, grid:{left:48,right:56,top:40,bottom:48,containLabel:true}, xAxis:{type:'time'}, yAxis: yAxes, series,
     dataZoom:[{type:'inside'},{type:'slider', height:18, bottom:4}]}, true);
   // YoY
   const years = [...new Set(yoy.map(r => r.year))].sort();
@@ -259,6 +281,54 @@ async function renderOccupancy(grain, markArea){
     series:[{type:'bar', name:'avg occupancy %', data: areas.map(r => Math.min(r.avg_occ, 300)), label:{show:true, position:'right', formatter: p => `${areas[p.dataIndex].avg_occ}% · ${fmtFull(areas[p.dataIndex].nights_full)} full nights`}}]}, true);
   chart('#ch-occ-areas').off('click').on('click', p => { const r = areas[p.dataIndex]; S.park = [r.park]; S.area = [r.area]; changed(); });
 }
+
+// ------------------------------------------------------------------ plan
+const DT_CLASS = {'School holiday':'sh','Public holiday':'ph','Long weekend':'lw','Weekend':'we','Weekday':'wd'};
+const occColor = v => v == null ? null : v >= 90 ? '#c23c5c' : v >= 70 ? '#c8742b' : v >= 40 ? '#b8a12b' : '#1f6f4a';
+const occPill = v => v == null ? '<span class="occ na">–</span>' : `<span class="occ" style="background:${occColor(v)}">${Math.round(v)}%</span>`;
+async function renderPlan(){
+  const has = S.park.length || S.area.length;
+  $('#plan-empty').hidden = !!has && !!$('#plan-from').value;
+  if (!has) { $('#plan-body').hidden = true; $('#plan-note').textContent = 'No park or campground selected.'; return; }
+  if (!$('#plan-from').value) { // default: next Easter-ish? use next Friday 4 weeks out, 3 nights
+    const d = new Date(); d.setDate(d.getDate() + 28 + ((5 - d.getDay() + 7) % 7)); const e = new Date(d); e.setDate(e.getDate() + 3);
+    $('#plan-from').value = d.toISOString().slice(0,10); $('#plan-to').value = e.toISOString().slice(0,10);
+  }
+  const arrival = $('#plan-from').value, departure = $('#plan-to').value, years = $('#plan-years').value;
+  if (!arrival || !departure || departure <= arrival) { $('#plan-note').textContent = 'Departure must be after arrival.'; return; }
+  $('#plan-note').textContent = 'Checking…';
+  const saved = {from: S.from, to: S.to}; S.from = ''; S.to = '';   // plan ignores the date-range filter
+  let d; try { d = await api('plan', {arrival, departure, years}); } catch (e) { $('#plan-note').textContent = String(e.message).slice(0, 160); return; } finally { Object.assign(S, saved); }
+  $('#plan-empty').hidden = true; $('#plan-body').hidden = false;
+  const cap = d.capacity, capTxt = cap.areas === 1 ? (cap.sites_cap ? `${fmtFull(cap.sites_cap)} sites · ${fmtFull(cap.people_cap)} people` : cap.people_cap ? `${fmtFull(cap.people_cap)} people (open area)` : 'no capacity record')
+                                                    : `${cap.areas} campgrounds · ${cap.areas_with_cap} with capacity`;
+  $('#plan-note').textContent = `${selLabel()} · ${d.nights.length} night${d.nights.length>1?'s':''} · ${capTxt} · data to ${d.data_end}`;
+  const nightsFull = d.nights.filter(n => n.avg_occ != null && n.avg_occ >= 90).length;
+  const allOcc = d.nights.map(n => n.avg_occ).filter(v => v != null);
+  const kp = [['Avg occupancy, equivalent nights', allOcc.length ? (allOcc.reduce((a,b)=>a+b,0)/allOcc.length).toFixed(0)+'%' : '–'],
+              ['Nights that were ≥90% full (avg of prior years)', `${nightsFull} of ${d.nights.length}`],
+              ['Busiest prior year', (() => { const y = [...d.per_year].sort((a,b)=>(b.avg_occ||0)-(a.avg_occ||0))[0]; return y ? `${y.year} · ${y.avg_occ ?? '–'}%` : '–'; })()],
+              ['School-holiday nights', d.nights.filter(n => n.school_holiday).length], ['Public-holiday / long-weekend nights', d.nights.filter(n => n.public_holiday || n.is_long_weekend).length]];
+  $('#plan-kpis').innerHTML = kp.map(([l,v]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  // chart: x = night, bars = avg prior occupancy coloured by level, lines per prior year
+  const x = d.nights.map(n => `${n.dow} ${n.date.slice(5)}`);
+  const yrs = d.per_year.map(y => y.years_ago);
+  chart('#ch-plan').setOption({...baseOpt(), legend:{top:0}, grid:{left:48,right:16,top:34,bottom:28,containLabel:true},
+    tooltip:{trigger:'axis', formatter: ps => { const n = d.nights[ps[0].dataIndex]; return `<b>${n.dow} ${n.date}</b> — ${n.day_type}${n.public_holiday?' · '+n.public_holiday:''}${n.school_holiday?' · '+n.school_holiday+' holidays':''}<br>` + n.prior.map(p => `${p.date} (${p.rule}): <b>${p.occ==null?'no data':p.occ+'%'}</b>`).join('<br>') + `<br>Average: <b>${n.avg_occ ?? '–'}%</b>`; }},
+    xAxis:{type:'category', data: x, axisLabel:{interval:0, rotate: x.length > 14 ? 45 : 0}},
+    yAxis:{type:'value', name:'occupancy %', max: v => Math.max(100, Math.ceil(v.max/10)*10), axisLabel:{formatter: v => v+'%'}},
+    series:[{type:'bar', name:'average of prior years', data: d.nights.map(n => ({value: n.avg_occ, itemStyle:{color: occColor(n.avg_occ) || '#dfe3dd', opacity:.85}})), barMaxWidth:40,
+             markLine:{silent:true, symbol:'none', lineStyle:{color:'#c23c5c', type:'dashed'}, label:{formatter:'full (90%)', position:'insideEndTop'}, data:[{yAxis:90}]}},
+            ...yrs.map((n,i) => ({type:'line', name: `${d.arrival.slice(0,4) - n}`, data: d.nights.map(nt => (nt.prior.find(p => p.years_ago === n)||{}).occ ?? null), showSymbol:true, symbolSize:6, lineStyle:{width:1.2, type: i === 0 ? 'solid' : 'dashed'}, color: ['#2d5fa8','#8a5fb3','#7f8c8d','#2aa198','#9b6f3b'][i%5]}))]}, true);
+  // table
+  const yrHead = d.per_year.map(y => `<th>${y.year}</th>`).join('');
+  $('#plan-table').innerHTML = `<table class="plan-table"><thead><tr><th>Night</th><th>Day type</th>${yrHead}<th>Average</th></tr></thead><tbody>` +
+    d.nights.map(n => `<tr><td><b>${n.dow}</b> ${n.date}</td><td><span class="dt ${DT_CLASS[n.day_type]||''}">${n.day_type}</span>${n.public_holiday?` <span class="dt ph">${esc(n.public_holiday)}</span>`:''}${n.school_holiday?` <span class="dt">${n.school_holiday} hols</span>`:''}</td>` +
+      d.per_year.map(y => { const p = n.prior.find(q => q.years_ago === y.years_ago); return `<td title="${p ? esc(p.date + ' · ' + p.rule) : ''}">${p ? occPill(p.occ) : '<span class="occ na">–</span>'}</td>`; }).join('') +
+      `<td>${occPill(n.avg_occ)}</td></tr>`).join('') + `</tbody></table>`;
+}
+$('#plan-go').addEventListener('click', () => { dirty.plan = true; render(); });
+['#plan-from','#plan-to','#plan-years'].forEach(id => $(id).addEventListener('change', () => { dirty.plan = true; }));
 
 // ------------------------------------------------------------------ map
 let map, mapReady = false, popup;

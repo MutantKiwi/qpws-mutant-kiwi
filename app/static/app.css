@@ -80,3 +80,19 @@ main{padding:16px 18px;max-width:1600px;margin:0 auto}
 
 body[data-ds="vehicle"] .camp-only{display:none}
 .card .card{box-shadow:none}
+
+/* campsite selected: orange accent + tent */
+body[data-sel="area"]{--accent:#c8742b}
+body[data-sel="area"] .brand .dot{background:#c8742b}
+.chip.area::before{content:"\26FA";margin-right:3px}
+.chip.area{background:#c8742b}
+.chip.park{background:#1f6f4a}
+body[data-ds="vehicle"] .camp-only-tab{display:none}
+.plan-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.plan-table th,.plan-table td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.plan-table th{background:var(--bg);font-weight:600}
+.plan-table td.n{text-align:right;font-family:"IBM Plex Mono",monospace}
+.occ{display:inline-block;min-width:44px;padding:1px 6px;border-radius:4px;text-align:center;color:#fff;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.occ.na{background:#dfe3dd;color:#5f6b63}
+.dt{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;background:#eef3ee;color:#1f6f4a}
+.dt.ph{background:#fbe3e8;color:#c23c5c}.dt.lw{background:#fde9d9;color:#c8742b}.dt.we{background:#e3ebf7;color:#2d5fa8}.dt.wd{background:#eceeec;color:#5f6b63}
