@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QPWS Permits Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="/static/vendor/maplibre-gl.css" rel="stylesheet">
+<link href="/static/vendor/tabulator_simple.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span>QPWS Permits Explorer</div>
+  <div class="seg" id="dataset">
+    <button data-v="camping" class="on">Camping</button>
+    <button data-v="vehicle">Vehicle</button>
+  </div>
+  <nav class="tabs" id="views">
+    <button data-v="overview" class="on">Overview</button>
+    <button data-v="map">Map</button>
+    <button data-v="charts">Charts</button>
+    <button data-v="table">Table</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section class="filters" id="filters">
+  <div class="search">
+    <input id="q" type="search" placeholder="Search park, camping area, postcode or locality…" autocomplete="off">
+    <div class="suggest" id="suggest" hidden></div>
+  </div>
+  <label>From <input type="date" id="from"></label>
+  <label>To <input type="date" id="to"></label>
+  <div class="presets">
+    <button data-p="12m">12 m</button><button data-p="ytd">YTD</button><button data-p="ly">Last yr</button><button data-p="5y">5 yrs</button><button data-p="all">All</button>
+  </div>
+  <select id="state" title="Add a visitor state filter"></select>
+  <select id="park" title="Add a park filter"></select>
+  <select id="varea" title="Add a recreation area filter" hidden></select>
+  <select id="duration" title="Add a permit duration filter" hidden></select>
+  <select id="daytype" title="Filter by the type of day the stay / permit starts on"></select>
+  <select id="holiday" title="Filter to a school-holiday period"></select>
+  <button id="clear" class="ghost">Clear</button>
+  <div class="chips" id="chips"></div>
+</section>
+
+<main>
+  <!-- OVERVIEW -->
+  <section class="view on" id="v-overview">
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="card"><div class="card-h"><h3>Monthly trend</h3><select id="ov-metric" class="mini"></select></div><div class="chart" id="ov-ts"></div></div>
+      <div class="card"><div class="card-h"><h3 id="ov-top-title">Top parks</h3></div><div class="chart" id="ov-top"></div></div>
+      <div class="card"><div class="card-h"><h3>Seasonality — month × year</h3></div><div class="chart" id="ov-heat"></div></div>
+      <div class="card"><div class="card-h"><h3>Where visitors come from</h3></div><div class="chart" id="ov-state"></div></div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="view" id="v-map">
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-ctl card">
+        <div class="seg small" id="map-mode">
+          <button data-v="areas" class="on">Camping areas</button>
+          <button data-v="origins">Visitor origin</button>
+          <button data-v="flows">Flows</button>
+        </div>
+        <label>Size by <select id="map-metric" class="mini"></select></label>
+        <label id="map-minn-l">Min bookings <input id="map-minn" type="number" value="20" min="1" class="mini"></label>
+        <div class="legend" id="map-legend"></div>
+        <div class="hint" id="map-hint"></div>
+      </div>
+      <div class="map-side card" id="map-side" hidden></div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="view" id="v-charts">
+    <div class="card">
+      <div class="card-h">
+        <h3>Time series</h3>
+        <label>Metric <select id="ts-metric" class="mini"></select></label>
+        <label>Grain <select id="ts-grain" class="mini"><option>month</option><option>quarter</option><option>year</option><option>week</option></select></label>
+        <label>Split by <select id="ts-by" class="mini"><option value="">— none —</option></select></label>
+        <label><input type="checkbox" id="ts-shade" checked> Shade school holidays</label>
+        <label><input type="checkbox" id="ts-ph"> Mark public holidays</label>
+      </div>
+      <div class="chart tall" id="ch-ts"></div>
+    </div>
+    <div class="card camp-only" id="occ-card">
+      <div class="card-h">
+        <h3>Occupancy vs capacity</h3>
+        <label>Basis <select id="occ-basis" class="mini"><option value="auto">auto (sites / people)</option><option value="sites">sites</option><option value="people">people</option></select></label>
+        <label>Stat <select id="occ-stat" class="mini"><option value="avg">average</option><option value="p90">90th percentile</option><option value="max">max</option></select></label>
+        <span class="muted" id="occ-note">In-house bookings (or people) per night ÷ current BookEasy capacity. Visitor filters (state, postcode) don't apply here.</span>
+      </div>
+      <div class="kpis" id="occ-kpis" style="margin-bottom:8px"></div>
+      <div class="grid2" style="margin-top:0">
+        <div><div class="chart" id="ch-occ-ts"></div></div>
+        <div><div class="chart" id="ch-occ-dt"></div></div>
+      </div>
+      <div class="card-h" style="margin-top:8px"><h3>Busiest areas</h3><span class="muted">areas with ≥ 30 nights of guests in the period · click to filter</span></div>
+      <div class="chart tall" id="ch-occ-areas"></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-h"><h3>Holiday effect — per calendar day</h3><span class="muted">total ÷ number of days of that type in the period</span></div><div class="chart" id="ch-dt"></div></div>
+      <div class="card"><div class="card-h"><h3>School-holiday periods — per calendar day</h3><span class="muted">vs term time</span></div><div class="chart" id="ch-sh"></div></div>
+      <div class="card"><div class="card-h"><h3>Year-on-year by month</h3></div><div class="chart" id="ch-yoy"></div></div>
+      <div class="card"><div class="card-h"><h3>Breakdown</h3><label>by <select id="bd-by" class="mini"></select></label><label>top <input id="bd-top" type="number" value="20" min="3" max="100" class="mini"></label></div><div class="chart tall" id="ch-bd"></div></div>
+      <div class="card"><div class="card-h"><h3 id="ch-d1-t">Length of stay</h3></div><div class="chart" id="ch-d1"></div></div>
+      <div class="card"><div class="card-h"><h3 id="ch-d2-t">Party size</h3></div><div class="chart" id="ch-d2"></div></div>
+      <div class="card"><div class="card-h"><h3>Booking lead time</h3></div><div class="chart" id="ch-lead"></div></div>
+      <div class="card"><div class="card-h"><h3>Day of week (arrival / start)</h3></div><div class="chart" id="ch-dow"></div></div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section class="view" id="v-table">
+    <div class="card">
+      <div class="card-h"><h3>Records</h3><span class="muted" id="tbl-count"></span><div class="spacer"></div><a id="export" class="btn" href="#" download>Export CSV (filtered)</a></div>
+      <div id="table"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">Source: QPWS camping and vehicle access permit exports 2011–2026 (DETSI). Bookings = one row per camping reservation; vehicle permits = one row per permit. Camping-area coordinates from the Queensland National Parks Booking Service; postcode centroids ABS/Australia Post. Day types use Queensland public holidays and Queensland state-school term dates (education.qld.gov.au); a day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend. Figures for the current quarter are partial.</footer>
+
+<script src="/static/vendor/maplibre-gl.js"></script>
+<script src="/static/vendor/echarts.min.js"></script>
+<script src="/static/vendor/tabulator.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# raw permit exports are not committed (large, and sourced separately); Parquet outputs are
+data/raw/camping/*.csv
+data/raw/vehicle/*.csv
+data/raw/legacy/*.csv
+data/work/
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
