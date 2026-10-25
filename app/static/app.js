@@ -361,7 +361,7 @@ function renderTable(){
   const cols = camp ? [
       {title:'Booked', field:'booking_date', width:100}, {title:'Arrive', field:'arrival_date', width:100}, {title:'Depart', field:'departure_date', width:100},
       {title:'Nights', field:'nights', hozAlign:'right', width:70}, {title:'Adults', field:'adults', hozAlign:'right', width:70}, {title:'Child', field:'children', hozAlign:'right', width:65}, {title:'Inf', field:'infants', hozAlign:'right', width:55},
-      {title:'Park', field:'park', minWidth:200}, {title:'Camping area', field:'area', minWidth:220},
+      {title:'Park', field:'park', minWidth:200}, {title:'Camping area', field:'area', minWidth:220}, {title:'Area (as exported)', field:'area_raw', minWidth:200},
       {title:'Postcode', field:'postcode', width:85}, {title:'Locality', field:'o_locality', width:140}, {title:'State', field:'state', width:65}, {title:'Lead d', field:'lead_days', hozAlign:'right', width:70},
       {title:'Day type', field:'day_type', width:110}, {title:'Sch. hols', field:'school_holiday', width:85}, {title:'Public hol', field:'public_holiday', width:130}, {title:'SH nights', field:'sh_nights', hozAlign:'right', width:80},
       {title:'Era', field:'era', width:90}, {title:'Source', field:'source_file', width:220}]

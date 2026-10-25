@@ -85,7 +85,13 @@
  QPWS Permits Explorer$>100% in earlier years (notably the small K'gari western-beach areas); areas not in the booking site today (~20% of
  QPWS Permits Explorer$bookings) have no occupancy. Treat occupancy as a strong relative signal, not an audit figure.
  QPWS Permits Explorer$
- QPWS Permits Explorer$### Calendar / day types
+ QPWS Permits Explorer$### Canonical campground names
+Raw exports spell the same campground many ways and split it into tent/trailer/group sub-sites. Where a raw
+(park, area) resolves to a booking-site operator, `park`/`area` are replaced by that operator's current park and
+name; `park_raw`/`area_raw` keep the export values. A short `PARK_ALIASES` map in `etl.py` handles park renames for
+areas with no operator (Fraser Island → K'gari, Moreton Island NP → Recreation Area). 1,438 raw names → ~885 campgrounds.
+
+### Calendar / day types
  QPWS Permits Explorer$- **Public holidays:** `holidays` package, AU‑QLD — includes the Royal Queensland Show (Brisbane only, treated statewide), the 2013–15 Labour Day move, Queen's/King's Birthday.
  QPWS Permits Explorer$- **School holidays:** the gaps between Queensland *state* school terms (`lookups/qld_school_terms.csv`, sourced from education.qld.gov.au; 2010–13 via archived copies of the department's page). Labelled Easter / Winter / Spring / Summer by the term just finished. Independent/Catholic schools differ by a few days; NSW/VIC holidays are not included (yet).
  QPWS Permits Explorer$- **Long weekend:** any run of ≥ 3 consecutive non‑working days (weekend + public holiday).

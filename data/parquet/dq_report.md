@@ -1,11 +1,11 @@
 # QPWS permits ETL — data quality report
-_Generated 2026-10-25 15:42_
+_Generated 2026-10-25 16:32_
 
 ## Row counts
 | table | rows | first | last | nights | person_nights |
 |---|---|---|---|---|---|
-| camping | 3,281,358 | 2010-09-21 | 2026-09-30 | 7,541,595 | 20,854,067 |
 | vehicle | 2,792,111 | 2010-04-01 | 2026-09-30 |  |  |
+| camping | 3,281,358 | 2010-09-21 | 2026-09-30 | 7,541,595 | 20,854,052 |
 
 ## Camping rows by era
 | era | rows | first | last |
@@ -25,9 +25,9 @@ _Generated 2026-10-25 15:42_
 | 2,015 | 184,055 | 473,963 | 1,335,948 | 2.58 |
 | 2,016 | 206,906 | 502,662 | 1,455,764 | 2.43 |
 | 2,017 | 211,420 | 501,289 | 1,464,907 | 2.37 |
-| 2,018 | 235,327 | 540,888 | 1,551,248 | 2.3 |
+| 2,018 | 235,327 | 540,888 | 1,551,229 | 2.3 |
 | 2,019 | 219,314 | 499,306 | 1,420,734 | 2.28 |
-| 2,020 | 206,496 | 425,935 | 1,183,972 | 2.06 |
+| 2,020 | 206,496 | 425,935 | 1,183,976 | 2.06 |
 | 2,021 | 283,695 | 619,823 | 1,663,654 | 2.18 |
 | 2,022 | 255,815 | 549,690 | 1,497,393 | 2.15 |
 | 2,023 | 262,763 | 552,734 | 1,476,990 | 2.1 |
@@ -112,10 +112,54 @@ _Generated 2026-10-25 15:42_
 | Bribie Island Recreation Area - Bribie Island Vehicle Access Permit | 4,309 |
 | Moreton Island Recreation Area - Moreton Island Vehicle Access Permit | 2,429 |
 | Cooloola and Fraser Island Recreation Areas - Combined Cooloola and Fraser Vehicle Access Permit | 318 |
-| Resident VAP - Annual (1Yr.) | 1 |
 | Cooloola Vehicle Access Permit - 0 | 1 |
+| Resident VAP - Annual (1Yr.) | 1 |
 
-## Camping area geocoding
+## Area names merged into one canonical campground (top)
+| park | canonical area | variants | raw names |
+|---|---|---|---|
+| Cooloola Recreation Area | Teewah Beach camping zone 7 | 2 | Teewah Beach camping zone 7 | Teewah Beach camping area |
+| Imbil State Forest | Charlie Moreland camping area | 3 | Charlie Moreland Overflow camping area CLOSED | Charlie Moreland camping area |
+| K'gari (Fraser Island) Recreation Area | Central Station camping area | 14 | Central Station camping area | Central Station (group site)(not for use by SSQ) | Central Station (Tent Site) camping area | Central Station group area | Central Station (trailer site) camping area | Central Station (Trailer Site) camping area | Central Station (tent site) camping area | Central Station group camping area | Central Station (Geat Walk campsites) | Central Station group area (not for use by SSQ) |
+| K'gari (Fraser Island) Recreation Area | Dundubara camping area | 12 | Dundubara (Trailer Site) camping area | Dundubara group camping area | Dundubara tent camping | Dundubara (tent site) camping area | Dundubara camping area | Dundubara group area | Dundubara (trailer site) camping area | Dundubara (Tent Site) camping area |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 8 - Marloo, Ocean Lake, Duling | 3 | Beach camping zone 8 - Marloo, Ocean Lake, Duling |
+| Inskip Peninsula Recreation Area | M.V. Sarawak | 2 | MV Sarawak | M.V. Sarawak |
+| Beerburrum and Beerwah State Forests | Coochin Creek | 2 | Coochin Creek |
+| Danbulla State Forest | Fong-On Bay camping area | 3 | Fong-On Bay camping area |
+| Girraween National Park | Castle Rock camping area | 9 | Castle Rock camping area trailer or van sites | Castle Rock (tent site) camping area | Castle Rock (trailer/tent site) camping area | Castle Rock camping area | Castle Rock (Trailer Site)camping area | Castle Rock (trailer sites) camping area | Castle Rock camping area tent sites | Castle Rock camping area (PWD sites) | Castle Rock (trailer/tent site) camping areaOLD |
+| Danbulla State Forest | Downfall Creek camping area | 3 | Downfall Creek camping area |
+| Inskip Peninsula Recreation Area | S.S. Dorrigo | 2 | SS Dorrigo | S.S. Dorrigo |
+| Cooloola Recreation Area | Freshwater camping area | 9 | Freshwater (Tent Site) camping area | Freshwater (trailer site) Camping Area | Freshwater camping area (Trailer Sites) | Freshwater Group camping area | Freshwater camping area (Tent Sites) | Freshwater Education camping area | Freshwater camping area | Freshwater (tent site) camping area | Freshwater (trailer site) camping area |
+| Jimna State Forest | Peach Trees camping area | 2 | Peach Trees camping area | Peach Trees Overflow camping area - CLOSED |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 6 - Eugarie, Yurru, Guruman | 3 | Beach camping zone 6 - Eugarie, Yurru, Guruman |
+| Amamoor State Forest | Cedar Grove camping area | 2 | Cedar Grove camping area |
+| Inskip Peninsula Recreation Area | M.V. Beagle | 2 | M.V. Beagle | MV Beagle |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 5 - Maheno and Wahba | 3 | Beach camping zone 5 - Maheno and Wahba |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 2 - One Tree, Cornwells, Gabala | 4 | Beach camping zone 2 - One Tree, Cornwells ,Gabala | Beach camping zone 2-Cornwells,Gabala (OTR closed) | Beach camping zone 2 - One Tree, Cornwells, Gabala |
+| K'gari (Fraser Island) Recreation Area | Waddy Point Top camping area | 10 | Waddy Point top camping area | Waddy Point Top (trailer site) camping area | Waddy Point Top (Tent Site) camping area | Waddy Point Top (tent site) camping area | Waddy Point top tent camping | Waddy Point Top (Trailer Site) camping area | Waddy Point group camping area | Waddy Point Top camping area |
+| K'gari (Fraser Island) Recreation Area | Waddy Point beachfront camping area | 11 | Waddy Point beachfront camping area | Waddy Point beachfront camping - trailer sites | Waddy Point beachfront (tent site) camping area | Waddy Point beachfront tent camping | Waddy Point beachfront camping trailer sites | Waddy Point beachfront (Tent Site) camping area | Waddy Point beachfront (trailer site) camping area | Waddy Point beachfront (Trailer Site) camping area |
+| Inskip Peninsula Recreation Area | M.V. Natone | 2 | M.V. Natone | MV Natone |
+| Cape Hillsborough National Park | Smalleys Beach | 2 | Smalleys Beach | Smalleys Beach camping area |
+| Blackdown Tableland National Park | Munall camping area | 2 | Munall campground | Munall camping area |
+| Kutini-Payamu (Iron Range) National Park (CYPAL) | Chilli Beach camping area | 3 | Chilli Beach CTO camping area | Chilli Beach camping area | Chilli Beach camping area CTO site |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 4 - Guluri and Eli | 3 | Beach camping zone 4 - Guluri and Eli |
+| Danbulla State Forest | Kauri Creek camping area | 3 | Kauri Creek camping area |
+| Amamoor State Forest | Amamoor Creek camping area | 2 | Amamoor Creek camping area |
+| Daintree National Park (CYPAL) | Noah Beach camping area | 2 | Noah Beach camping area |
+| Conondale National Park | Booloumba Creek 1 camping area | 2 | Booloumba Creek camping area 1 | Booloumba Creek 1 camping area |
+| Brooyar State Forest | Glastonbury Creek camping area | 2 | Glastonbury camping area | Glastonbury Creek camping area |
+| Conondale National Park | Booloumba Creek 4 camping area | 2 | Booloumba Creek camping area 4 | Booloumba Creek 4 camping area |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 7 - Wyuna and Burad | 3 | Beach camping zone 7 - Wyuna and Burad |
+| Conondale National Park | Booloumba Creek 3 camping area | 2 | Booloumba Creek camping area 3 | Booloumba Creek 3 camping area |
+| Byfield State Forest | Upper Stony camping area | 2 | Upper Stony camping area |
+| Danbulla State Forest | Platypus camping area | 3 | Platypus camping area |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 3 - Poyungan and Winnam | 3 | Beach camping zone 3 - Poyungan and Winnam |
+| Boodjamulla National Park (Aboriginal Land) | Lawn Hill Gorge camping area | 8 | Lawn Hill Gorge (trailer) camping area | Lawn Hill Gorge camping area | Lawn Hill  Gorge camping area | Lawn Hill  Gorge (Trailer) camping area | Lawn Hill  Gorge  CTO and Group camping area | Lawn Hill Gorge (Tent) camping area | Lawn Hill Gorge (tent) camping area |
+| Tuan State Forest | Hedleys camping area | 2 | Hedleys camping area | Hedleys Camping Area (Kauri Creek) |
+| D'Aguilar National Park | Neurum Creek camping area | 2 | Neurum Creek camping area | Neurum Creek campground |
+| K'gari (Fraser Island) Recreation Area | Beach camping zone 1 - Govi and Wongai | 3 | Beach camping zone 1 - Govi and Wongai | Beach camping zone 1 - Govi (Wongai temp closure) |
+
+## Camping area geocoding (raw names)
 | match | areas | bookings |
 |---|---|---|
 | fuzzy | 1,051 | 2,625,871 |
@@ -206,31 +250,31 @@ _Generated 2026-10-25 15:42_
 ## Capacity coverage (current BookEasy site config applied to all years)
 | capacity_type | areas | bookings | sites | people_cap |
 |---|---|---|---|---|
-| sites | 678 | 1,261,999 | 6,309 | 44,035 |
-|  | 397 | 642,018 |  |  |
-| people | 363 | 1,377,341 | 57 | 24,983 |
+|  | 375 | 642,018 |  |  |
+| sites | 296 | 1,256,811 | 1,813 | 11,414 |
+| people | 214 | 1,382,529 | 12 | 12,474 |
 
 ## Occupancy sanity: area-nights over 100% of cap (expect some — group bookings, config changes)
 | band | area_nights |
 |---|---|
-| 0-50% | 567,054 |
-| 100-150% | 19,404 |
-| 50-90% | 105,475 |
-| 90-100% | 124,277 |
-| >150% | 9,600 |
-| no cap | 121,332 |
+| 0-50% | 524,159 |
+| 100-150% | 20,392 |
+| 50-90% | 104,324 |
+| 90-100% | 125,009 |
+| >150% | 11,184 |
+| no cap | 120,332 |
 
 ## State normalisation
 | state | camping_rows |
 |---|---|
-| QLD | 2,618,822 |
-| NSW | 294,274 |
-| VIC | 168,103 |
-|  | 58,454 |
+| QLD | 2,618,821 |
+| NSW | 294,276 |
+| VIC | 168,104 |
+|  | 58,453 |
 | WA | 36,937 |
-| SA | 32,932 |
+| SA | 32,930 |
 | OS | 25,076 |
-| TAS | 22,447 |
+| TAS | 22,448 |
 | ACT | 15,400 |
 | NT | 8,913 |
 
@@ -242,8 +286,8 @@ _Generated 2026-10-25 15:42_
 | camping lead_days < 0 | 18,927 |
 | camping lead_days > 400 | 569 |
 | vehicle lead_days < 0 | 11,848 |
-| camping postcode null | 87,300 |
-| vehicle postcode null | 45,165 |
+| camping postcode null | 87,299 |
+| vehicle postcode null | 45,161 |
 
 ## Source files: labelled quarter vs arrival-date span
 | file | rows | first_arrival | last_arrival |
@@ -255,8 +299,8 @@ _Generated 2026-10-25 15:42_
 | 2017_Q3_qpws-permits-camping-jul17-sep17.csv | 70,176 | 2017-06-22 | 2017-09-30 |
 | 2017_Q4_qpws-permits-camping-oct17-dec17.csv | 48,923 | 2017-10-01 | 2017-12-31 |
 | 2018_Q1_qpws-permits-camping-jan18-mar18.csv | 45,385 | 2017-12-04 | 2018-03-31 |
-| 2018_Q2_qpws-permits-camping-apr18-jun18.csv | 31,487 | 2018-02-17 | 2018-06-30 |
-| 2018_Q3_qpws-permits-camping-jul18-sep18.csv | 108,483 | 2018-01-20 | 2018-09-30 |
+| 2018_Q2_qpws-permits-camping-apr18-jun18.csv | 32,752 | 2018-02-15 | 2018-06-30 |
+| 2018_Q3_qpws-permits-camping-jul18-sep18.csv | 107,218 | 2018-01-20 | 2018-09-30 |
 | 2018_Q4_qpws-permits-camping-oct18-dec18.csv | 52,826 | 2018-09-08 | 2018-12-31 |
 | 2019_Q1_qpws-permits-camping-jan19-mar19.csv | 39,782 | 2018-12-21 | 2019-03-31 |
 | 2019_Q2_qpws-permits-camping-apr19-jun19.csv | 55,358 | 2019-03-22 | 2019-06-30 |

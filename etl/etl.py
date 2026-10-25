@@ -367,6 +367,33 @@ def main():
     UPDATE areas SET lat = p.lat, lon = p.lon, match = 'park_centroid'
     FROM (SELECT park, avg(lat) lat, avg(lon) lon FROM areas WHERE lat IS NOT NULL GROUP BY park) p
     WHERE areas.park = p.park AND areas.lat IS NULL""")
+    # ---- canonical names: areas that resolve to the same booking-site operator get its current park/area name
+    #      ("M.V. Sarawak" / "MV Sarawak", "Fraser Island (Great Sandy NP)" / "K'gari (Fraser Island) Recreation Area")
+    con.execute("ALTER TABLE areas RENAME TO areas_raw")
+    con.execute("""ALTER TABLE areas_raw ADD COLUMN park_c VARCHAR; ALTER TABLE areas_raw ADD COLUMN area_c VARCHAR""")
+    con.execute("""UPDATE areas_raw SET park_c = coalesce(o.op_park, areas_raw.park), area_c = coalesce(o.op_name, areas_raw.area)
+                   FROM (SELECT DISTINCT ON (operator_id) operator_id, op_park, op_name FROM op_norm) o WHERE areas_raw.operator_id = o.operator_id""")
+    con.execute("UPDATE areas_raw SET park_c = park WHERE park_c IS NULL"); con.execute("UPDATE areas_raw SET area_c = area WHERE area_c IS NULL")
+    # park renames over the years for areas with no operator match
+    PARK_ALIASES = {
+        "Fraser Island (Great Sandy National Park)": "K'gari (Fraser Island) Recreation Area",
+        "Fraser Island Recreation Area": "K'gari (Fraser Island) Recreation Area",
+        "Fraser Island Great Walk": "K'gari (Fraser Island) Great Walk",
+        "Moreton Island National Park": "Moreton Island Recreation Area",
+        "D Aguilar National Park": "D'Aguilar National Park",
+        "Lamington National Park (Green Mountains)": "Lamington National Park",
+    }
+    for old_p, new_p in PARK_ALIASES.items():
+        con.execute("UPDATE areas_raw SET park_c = ? WHERE park_c = ?", [new_p, old_p])
+    con.execute("ALTER TABLE camping ADD COLUMN park_raw VARCHAR"); con.execute("ALTER TABLE camping ADD COLUMN area_raw VARCHAR")
+    con.execute("UPDATE camping SET park_raw = park, area_raw = area")
+    con.execute("""UPDATE camping SET park = a.park_c, area = a.area_c FROM areas_raw a
+                   WHERE camping.park_raw = a.park AND camping.area_raw IS NOT DISTINCT FROM a.area""")
+    con.execute("""CREATE OR REPLACE TABLE areas AS
+        SELECT park_c AS park, area_c AS area, sum(bookings) AS bookings, min(first_seen) AS first_seen, max(last_seen) AS last_seen,
+               any_value(lat) AS lat, any_value(lon) AS lon, any_value(operator_id) AS operator_id,
+               min(match) AS match, count(*) AS raw_name_variants, string_agg(DISTINCT area, ' | ') AS raw_names
+        FROM areas_raw GROUP BY park_c, area_c""")
     con.execute("ALTER TABLE camping ADD COLUMN lat DOUBLE"); con.execute("ALTER TABLE camping ADD COLUMN lon DOUBLE")
     con.execute("UPDATE camping SET lat = a.lat, lon = a.lon FROM areas a WHERE camping.park = a.park AND camping.area IS NOT DISTINCT FROM a.area")
 
@@ -472,8 +499,9 @@ def main():
     report += ["## Vehicle permits by year", tbl("SELECT year, count(*) permits FROM vehicle GROUP BY 1 ORDER BY 1", ["year","permits"]), ""]
     report += ["## Vehicle area x duration", tbl("SELECT area, duration, permit_class, count(*) n FROM vehicle GROUP BY ALL ORDER BY n DESC", ["area","duration","class","n"]), ""]
     report += ["## Vehicle 'Other' products (unparsed)", tbl("SELECT product_raw, count(*) n FROM vehicle WHERE area='Other' OR duration='Other' GROUP BY 1 ORDER BY n DESC LIMIT 30", ["product_raw","n"]), ""]
-    report += ["## Camping area geocoding", tbl("SELECT match, count(*) areas, sum(bookings) bookings FROM areas GROUP BY 1 ORDER BY 3 DESC", ["match","areas","bookings"]), ""]
-    report += ["## Top unmatched / park-centroid areas (add to lookups/area_aliases.csv)", tbl("SELECT park, area, bookings, first_seen, last_seen, match FROM areas WHERE match IN ('unmatched','park_centroid') ORDER BY bookings DESC LIMIT 60", ["park","area","bookings","first","last","match"]), ""]
+    report += ["## Area names merged into one canonical campground (top)", tbl("SELECT park, area, raw_name_variants, raw_names FROM areas WHERE raw_name_variants > 1 ORDER BY bookings DESC LIMIT 40", ["park","canonical area","variants","raw names"]), ""]
+    report += ["## Camping area geocoding (raw names)", tbl("SELECT match, count(*) areas, sum(bookings) bookings FROM areas_raw GROUP BY 1 ORDER BY 3 DESC", ["match","areas","bookings"]), ""]
+    report += ["## Top unmatched / park-centroid areas (add to lookups/area_aliases.csv)", tbl("SELECT park, area, bookings, first_seen, last_seen, match FROM areas_raw WHERE match IN ('unmatched','park_centroid') ORDER BY bookings DESC LIMIT 60", ["park","area","bookings","first","last","match"]), ""]
     report += ["## Date parse failures (raw rows with unparseable arrival/start)", tbl("""SELECT 'camping' t, count(*) n FROM camp_typed WHERE start_date IS NULL AND stay_date IS NULL
         UNION ALL SELECT 'vehicle', count(*) FROM (SELECT * FROM veh_raw) r WHERE """ + DATE_EXPR.format(c='start_raw') + " IS NULL", ["table","rows_dropped"]), ""]
     report += ["## Camping bookings per day by day type (arrival date, whole period)", tbl("""SELECT c.day_type, count(DISTINCT c.date) AS n_days, count(b.row_id) AS bookings, round(count(b.row_id)*1.0/count(DISTINCT c.date),1) per_day

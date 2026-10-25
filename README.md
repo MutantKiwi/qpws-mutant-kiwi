@@ -49,6 +49,7 @@ different things — and only compared where it makes sense.
 - Campground **capacity is today's site configuration applied to all years**, so areas that have been re-zoned show
   >100% in earlier years. Treat occupancy as a relative signal.
 - A day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend.
+- Camping-area names changed spelling many times across exports ("M.V. Sarawak" / "MV Sarawak", tent/trailer sub-sites of one campground); they are merged under the booking site's current name, with the as-exported name kept in the table.
 - Vehicle permits carry no coordinates; recreation areas are shown at approximate centroids.
 
 ## Stack

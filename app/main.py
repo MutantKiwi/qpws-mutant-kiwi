@@ -332,7 +332,7 @@ def map_flows(request: Request, top: int = Query(200, le=2000)):
 
 TABLE_COLS = {
     "camping": ["row_id", "booking_id", "booking_date", "arrival_date", "departure_date", "nights", "adults", "children", "infants", "people",
-                "park", "area", "postcode", "o_locality", "state", "lead_days", "day_type", "school_holiday", "public_holiday", "sh_nights", "era", "source_file"],
+                "park", "area", "area_raw", "postcode", "o_locality", "state", "lead_days", "day_type", "school_holiday", "public_holiday", "sh_nights", "era", "source_file"],
     "vehicle": ["row_id", "permit_id", "booking_date", "start_date", "area", "duration", "permit_class", "days_valid", "product_raw",
                 "postcode", "o_locality", "state", "lead_days", "day_type", "school_holiday", "public_holiday", "era", "source_file"],
 }
@@ -386,3 +386,8 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 @app.get("/", response_class=HTMLResponse)
 def index():
     return (STATIC_DIR / "index.html").read_text(encoding="utf-8")
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    from fastapi.responses import FileResponse
+    return FileResponse(STATIC_DIR / "favicon.ico", media_type="image/x-icon")
