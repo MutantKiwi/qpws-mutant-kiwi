@@ -135,6 +135,8 @@ areas with no operator (Fraser Island → K'gari, Moreton Island NP → Recreati
  QPWS Permits Explorer$| `/api/seasonality`, `/api/yoy` | month × year matrices |
  QPWS Permits Explorer$| `/api/daytype?by=day_type|school_holiday&metric=` | per‑calendar‑day rates by day type / holiday period |
  QPWS Permits Explorer$| `/api/occupancy/summary|timeseries|areas|daytype?basis=auto|sites|people` | occupancy vs capacity (camping; date/park/area/day‑type filters only) |
+| `/api/occupancy/inhouse?grain=` | nightly in‑house bookings/people per period + capacity of the selection |
+| `/api/plan?arrival=&departure=&years=` | future window vs equivalent nights in prior years (match: public holiday › long‑weekend position › school‑holiday day › weekday) |
  QPWS Permits Explorer$| `/api/calendar?from=&to=` | school‑holiday periods and public holidays (chart overlays) |
  QPWS Permits Explorer$| `/api/breakdown?by=&metric=&top=` | ranked bars for any dimension |
  QPWS Permits Explorer$| `/api/map/areas`, `/api/map/origins`, `/api/map/flows` | map layers |
