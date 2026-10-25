@@ -24,6 +24,7 @@
     <button data-v="charts">Charts</button>
     <button data-v="table">Table</button>
     <button data-v="plan" class="camp-only-tab">Plan</button>
+    <button data-v="fees">Fees</button>
   </nav>
   <div class="spacer"></div>
   <div class="meta" id="meta"></div>
@@ -141,6 +142,17 @@
     </div>
   </section>
 
+  <!-- FEES -->
+  <section class="view" id="v-fees">
+    <div class="grid2" style="margin-top:0">
+      <div class="card"><div class="card-h"><h3>Fees over the years</h3><span class="muted">per night / per permit, nominal $</span></div><div class="chart tall" id="ch-fee-trend"></div></div>
+      <div class="card"><div class="card-h"><h3>Estimated revenue by financial year</h3><span class="muted" id="fees-rev-note">honours the current park / area / state filters</span></div><div class="chart tall" id="ch-fee-rev"></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><div class="card-h"><h3>Camping fees</h3><span class="muted">per night · statewide · set each 1 July</span></div><div id="fees-camp"></div></div>
+    <div class="card" style="margin-top:14px"><div class="card-h"><h3>Vehicle access permit fees</h3><span class="muted">by recreation area · Moreton Island left the state system after 2021–22</span></div><div style="overflow:auto" id="fees-veh"></div></div>
+    <div class="card" style="margin-top:14px"><div class="card-h"><h3>How revenue is estimated</h3></div><p class="muted" id="fees-note" style="margin:0"></p></div>
+  </section>
+
   <!-- TABLE -->
   <section class="view" id="v-table">
     <div class="card">
@@ -150,7 +162,7 @@
   </section>
 </main>
 
-<footer class="foot">Source: QPWS camping and vehicle access permit exports 2011–2026 (DETSI). Bookings = one row per camping reservation; vehicle permits = one row per permit. Camping-area coordinates from the Queensland National Parks Booking Service; postcode centroids ABS/Australia Post. Day types use Queensland public holidays and Queensland state-school term dates (education.qld.gov.au); a day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend. Figures for the current quarter are partial. v1.2</footer>
+<footer class="foot">Source: QPWS camping and vehicle access permit exports 2011–2026 (DETSI). Bookings = one row per camping reservation; vehicle permits = one row per permit. Camping-area coordinates from the Queensland National Parks Booking Service; postcode centroids ABS/Australia Post. Day types use Queensland public holidays and Queensland state-school term dates (education.qld.gov.au); a day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend. Figures for the current quarter are partial. v1.3</footer>
 
 <script src="/static/vendor/maplibre-gl.js"></script>
 <script src="/static/vendor/echarts.min.js"></script>

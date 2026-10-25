@@ -4,6 +4,9 @@
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const fmt = n => n == null ? '–' : (Math.abs(n) >= 1e6 ? (n/1e6).toFixed(2)+'M' : Math.abs(n) >= 1e4 ? (n/1e3).toFixed(1)+'k' : Number.isInteger(n) ? n.toLocaleString() : (+n).toLocaleString(undefined,{maximumFractionDigits:2}));
 const fmtFull = n => n == null ? '–' : (+n).toLocaleString();
+const isMoney = m => m === 'revenue';
+const fmtM = (m, v) => isMoney(m) ? (v == null ? '–' : '$' + fmt(v)) : fmt(v);
+const fmtMFull = (m, v) => isMoney(m) ? (v == null ? '–' : '$' + fmtFull(v)) : fmtFull(v);
 const PAL_PARK = ['#1f6f4a','#c8742b','#2d5fa8','#8a5fb3','#b8a12b','#c23c5c','#2aa198','#7f8c8d','#9b6f3b','#4f7f3a'];
 const PAL_AREA = ['#c8742b','#1f6f4a','#2d5fa8','#8a5fb3','#b8a12b','#c23c5c','#2aa198','#7f8c8d','#9b6f3b','#4f7f3a'];
 let PAL = PAL_PARK;
@@ -12,7 +15,7 @@ const selKind = () => (S.dataset === 'camping' && S.area.length) ? 'area' : (S.p
 const selLabel = () => selKind() === 'area' ? `${TENT} ${S.area.join(', ')}` : selKind() === 'park' ? S.park.join(', ') : '';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const LABEL = {bookings:'Bookings', nights:'Nights', person_nights:'Person-nights', people:'People', avg_nights:'Avg nights', avg_people:'Avg party size', avg_lead_days:'Avg lead days',
+const LABEL = {bookings:'Bookings', nights:'Nights', person_nights:'Person-nights', people:'People', revenue:'Est. revenue ($)', fy:'Financial year', avg_nights:'Avg nights', avg_people:'Avg party size', avg_lead_days:'Avg lead days',
   permits:'Permits', permit_days:'Permit-days', park:'Park', area:'Camping area', state:'Visitor state', sa4:'Visitor region (SA4)', postcode:'Postcode', locality:'Locality',
   year:'Year', quarter:'Quarter', month:'Month', dow:'Day of week', nights_bucket:'Length of stay', party_size:'Party size', lead_bucket:'Lead time', era:'Data era',
   duration:'Permit duration', permit_class:'Permit class', product:'Product', day_type:'Day type', school_holiday:'School-holiday period', school_term:'School term'};
@@ -23,7 +26,7 @@ const VEH_AREAS = {'Cooloola':[153.15,-26.00],"K'gari (Fraser Island)":[153.10,-
 // ------------------------------------------------------------------ state
 const S = {dataset:'camping', view:'overview', from:'', to:'', state:[], park:[], area:[], postcode:[], duration:[], daytype:[], holiday:[], q:'', mapMode:'areas'};
 let META = null;
-const dirty = {overview:true, map:true, charts:true, table:true, plan:true};
+const dirty = {overview:true, map:true, charts:true, table:true, plan:true, fees:true};
 
 function readHash(){
   const h = new URLSearchParams(location.hash.slice(1));
@@ -123,7 +126,7 @@ function changed(opts = {}){
 function render(){
   if (!dirty[S.view]) return;
   dirty[S.view] = false;
-  ({overview: renderOverview, map: renderMap, charts: renderCharts, table: renderTable, plan: renderPlan})[S.view]();
+  ({overview: renderOverview, map: renderMap, charts: renderCharts, table: renderTable, plan: renderPlan, fees: renderFees})[S.view]();
 }
 
 // ------------------------------------------------------------------ charts (ECharts)
@@ -149,15 +152,15 @@ async function renderOverview(){
   busy('#v-overview', false);
   Object.assign(sum, {occ_avg: occ.avg_occ, occ_full: occ.pct_nights_full});
   const camp = S.dataset === 'camping';
-  const k = camp ? [['bookings','Bookings'],['nights','Nights'],['person_nights','Person-nights'],['avg_nights','Avg nights'],['avg_people','Avg party'],['median_lead_days','Median lead (days)'],['pct_non_qld','% interstate/overseas'],['pct_nights_school_holiday','% nights in school hols'],['occ_avg','Avg occupancy %'],['occ_full','% area-nights ≥90% full'],['areas','Camping areas']]
-                 : [['permits','Permits'],['permit_days','Permit-days'],['pct_annual','% annual'],['median_lead_days','Median lead (days)'],['pct_non_qld','% interstate/overseas'],['pct_school_holiday','% starting in school hols'],['areas','Recreation areas']];
-  $('#kpis').innerHTML = k.map(([f,l]) => `<div class="kpi"><div class="v">${fmt(sum[f])}${(f.startsWith('pct')||f.startsWith('occ'))&&sum[f]!=null?'%':''}</div><div class="l">${l}</div></div>`).join('');
-  chart('#ov-ts').setOption({...baseOpt(), xAxis:{type:'time'}, yAxis:{type:'value', axisLabel:{formatter: fmt}},
+  const k = camp ? [['bookings','Bookings'],['nights','Nights'],['person_nights','Person-nights'],['avg_nights','Avg nights'],['avg_people','Avg party'],['median_lead_days','Median lead (days)'],['pct_non_qld','% interstate/overseas'],['revenue','Est. revenue'],['pct_nights_school_holiday','% nights in school hols'],['occ_avg','Avg occupancy %'],['occ_full','% area-nights ≥90% full'],['areas','Camping areas']]
+                 : [['permits','Permits'],['permit_days','Permit-days'],['revenue','Est. revenue'],['pct_annual','% annual'],['median_lead_days','Median lead (days)'],['pct_non_qld','% interstate/overseas'],['pct_school_holiday','% starting in school hols'],['areas','Recreation areas']];
+  $('#kpis').innerHTML = k.map(([f,l]) => `<div class="kpi"><div class="v">${f==='revenue'?fmtM('revenue',sum[f]):fmt(sum[f])}${(f.startsWith('pct')||f.startsWith('occ'))&&sum[f]!=null?'%':''}</div><div class="l">${l}</div></div>`).join('');
+  chart('#ov-ts').setOption({...baseOpt(), tooltip:{trigger:'axis', valueFormatter: v => fmtMFull(metric, v)}, xAxis:{type:'time'}, yAxis:{type:'value', axisLabel:{formatter: v => fmtM(metric, v)}},
     series:[{type:'line', name:L(metric), showSymbol:false, areaStyle:{opacity:.12}, lineStyle:{width:1.6}, data: ts.map(r => [r.period, r.value])}],
     dataZoom:[{type:'inside'},{type:'slider', height:18, bottom:4}]}, true);
-  chart('#ov-top').setOption({...baseOpt(), grid:{left:8,right:40,top:8,bottom:8,containLabel:true}, tooltip:{trigger:'item', valueFormatter:fmtFull},
-    xAxis:{type:'value', axisLabel:{formatter:fmt}}, yAxis:{type:'category', inverse:true, data: top.map(r => r.key), axisLabel:{width:180, overflow:'truncate'}},
-    series:[{type:'bar', name:L(metric), data: top.map(r => r.value), label:{show:true, position:'right', formatter: p => fmt(p.value)}}]}, true);
+  chart('#ov-top').setOption({...baseOpt(), grid:{left:8,right:40,top:8,bottom:8,containLabel:true}, tooltip:{trigger:'item', valueFormatter: v => fmtMFull(metric, v)},
+    xAxis:{type:'value', axisLabel:{formatter: v => fmtM(metric, v)}}, yAxis:{type:'category', inverse:true, data: top.map(r => r.key), axisLabel:{width:180, overflow:'truncate'}},
+    series:[{type:'bar', name:L(metric), data: top.map(r => r.value), label:{show:true, position:'right', formatter: p => fmtM(metric, p.value)}}]}, true);
   chart('#ov-top').off('click').on('click', p => { if (camp) S.park = [p.name]; else S.area = [p.name]; changed(); });
   heatOpt('#ov-heat', heat, metric);
   const stTot = st.reduce((a,r) => a + (r.value||0), 0) || 1;
@@ -329,6 +332,38 @@ async function renderPlan(){
 }
 $('#plan-go').addEventListener('click', () => { dirty.plan = true; render(); });
 ['#plan-from','#plan-to','#plan-years'].forEach(id => $(id).addEventListener('change', () => { dirty.plan = true; }));
+
+// ------------------------------------------------------------------ fees
+async function renderFees(){
+  busy('#v-fees', true);
+  const d = await api('fees'); busy('#v-fees', false);
+  const fys = [...new Set(d.schedule.map(r => r.fy))].sort();
+  const get = (fy, type, area, dur) => { const r = d.schedule.find(x => x.fy === fy && x.fee_type === type && x.area === area && x.duration === dur); return r ? r.amount : null; };
+  const money = v => v == null ? '–' : '$' + (+v).toFixed(2);
+  // camping table
+  $('#fees-camp').innerHTML = `<table class="plan-table"><thead><tr><th>FY</th><th>Per person / night</th><th>Family / night</th><th>Student / night</th><th>Change</th></tr></thead><tbody>` +
+    fys.map((fy, i) => { const pp = get(fy,'camping','all','per person per night'), prev = i ? get(fys[i-1],'camping','all','per person per night') : null;
+      return `<tr><td><b>${fy}</b></td><td class="n">${money(pp)}</td><td class="n">${money(get(fy,'camping','all','per family per night'))}</td><td class="n">${money(get(fy,'camping','all','student (educational) per night'))}</td><td class="n">${pp && prev ? ((pp/prev-1)*100).toFixed(1)+'%' : '–'}</td></tr>`; }).join('') + '</tbody></table>';
+  // vehicle table
+  const cols = [["Cooloola","Daily (online)"],["Cooloola","Daily (counter)"],["Cooloola","Weekly"],["Cooloola","Monthly"],["Cooloola","Annual"],["K'gari (Fraser Island)","Monthly"],["K'gari (Fraser Island)","Annual"],["Bribie Island","Weekly"],["Bribie Island","Annual"],["Combined Cooloola & K'gari","Monthly"],["Combined Cooloola & K'gari","Annual"],["Moreton Island","Monthly"],["Moreton Island","Annual"]];
+  $('#fees-veh').innerHTML = `<table class="plan-table"><thead><tr><th>FY</th>${cols.map(c => `<th>${esc(c[0].replace(" (Fraser Island)","").replace("Combined Cooloola & K'gari","Combined"))}<br><span class="muted">${c[1]}</span></th>`).join('')}</tr></thead><tbody>` +
+    fys.map(fy => `<tr><td><b>${fy}</b></td>${cols.map(c => `<td class="n">${money(get(fy,'vehicle',c[0],c[1]))}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
+  // trend chart: index to first year = 100 so different magnitudes share an axis, with raw $ in tooltip
+  const series = [['Camping per person','camping','all','per person per night'],['Cooloola day (online)','vehicle','Cooloola','Daily (online)'],['Cooloola week','vehicle','Cooloola','Weekly'],["K'gari month",'vehicle',"K'gari (Fraser Island)",'Monthly'],["K'gari annual",'vehicle',"K'gari (Fraser Island)",'Annual'],['Bribie annual','vehicle','Bribie Island','Annual']]
+    .map(([name,t,a,du]) => { const vals = fys.map(fy => get(fy,t,a,du)); const base = vals.find(v => v != null); return {type:'line', name, data: vals.map(v => v == null ? null : +(100*v/base).toFixed(1)), raw: vals, showSymbol:true, symbolSize:5, connectNulls:false}; });
+  chart('#ch-fee-trend').setOption({...baseOpt(), legend:{type:'scroll', top:0}, grid:{left:48,right:16,top:60,bottom:28,containLabel:true},
+    tooltip:{trigger:'axis', formatter: ps => `<b>${ps[0].axisValue}</b><br>` + ps.map(p => `${p.marker}${p.seriesName}: <b>${money(series[p.seriesIndex].raw[p.dataIndex])}</b> (index ${p.value ?? '–'})`).join('<br>')},
+    xAxis:{type:'category', data: fys, axisLabel:{rotate:45}}, yAxis:{type:'value', name:'index (first year = 100)', nameGap:28, min: v => Math.floor(v.min/10)*10}, series}, true);
+  // revenue chart
+  const rfys = [...new Set([...d.revenue.camping.map(r => r.fy), ...d.revenue.vehicle.map(r => r.fy)])].sort();
+  const rv = (ds, fy) => (d.revenue[ds].find(r => r.fy === fy) || {}).revenue || 0;
+  chart('#ch-fee-rev').setOption({...baseOpt(), legend:{top:0}, grid:{left:56,right:16,top:34,bottom:28,containLabel:true}, tooltip:{trigger:'axis', valueFormatter: v => '$' + fmtFull(v)},
+    xAxis:{type:'category', data: rfys, axisLabel:{rotate:45}}, yAxis:{type:'value', axisLabel:{formatter: v => '$' + fmt(v)}},
+    series:[{type:'bar', stack:'r', name:'Camping (est.)', data: rfys.map(fy => rv('camping', fy)), color:'#1f6f4a'},{type:'bar', stack:'r', name:'Vehicle permits (est.)', data: rfys.map(fy => rv('vehicle', fy)), color:'#2d5fa8'}]}, true);
+  const last = rfys[rfys.length-1];
+  $('#fees-rev-note').textContent = `honours the current park / area / state / day-type filters · ${last} is a part year`;
+  $('#fees-note').textContent = d.note + ' Fees before 2016 apply to the pre-booking-system exports; three Cooloola counter-sale rates (2014–15, 2015–16, 2017–18) are estimated. Nominal dollars, not CPI-adjusted.';
+}
 
 // ------------------------------------------------------------------ map
 let map, mapReady = false, popup;

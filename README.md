@@ -26,6 +26,9 @@ school holidays, public holidays and campground capacity layered over the top.
   the day types for your dates. Castle Rock at Easter has been 100% full three years running; now you know before you book.
 - **Single‑campground view**: selecting one campground (⛺, orange) overlays nightly sites‑or‑people in house and the
   capacity line on the time series.
+- **Fees and revenue**: the camping and vehicle‑permit fee schedules for every financial year since 2009–10, and an
+  *estimated* revenue measure (fee × nights × chargeable people; permit × area/duration fee) usable in every chart,
+  KPI and map — about $128M camping and $120M vehicle to date, within ~10% of the audited 2022–23 figures.
 - **Export** any filtered slice as CSV, or hit the JSON API directly (`/api/docs`).
 
 ![Holiday effect](docs/screenshot-holidays.png)
@@ -38,6 +41,7 @@ school holidays, public holidays and campground capacity layered over the top.
 | QPWS / DETSI permit exports | camping bookings and vehicle access permits, 2011 → | 90 CSV files in six different layouts, reconciled by `etl/etl.py` |
 | Queensland National Parks Booking Service | camping-area coordinates, site types and capacity | public BookEasy endpoints (`bookeasy_operators.csv`, `bookeasy_rooms.csv`) |
 | education.qld.gov.au | state-school term dates 2010–2029 | `data/raw/lookups/qld_school_terms.csv` |
+| QPWS fee schedules (legislation, QoN 1010/2023, Wayback) | camping and vehicle permit fees 2009–10 → 2026–27 | `data/raw/lookups/fees.csv` |
 | `holidays` (Python) | Queensland public holidays | includes the Royal Queensland Show and Labour Day moves |
 | Australia Post / ABS via [matthewproctor/australianpostcodes](https://github.com/matthewproctor/australianpostcodes) | postcode centroids, localities, SA4 | `data/raw/lookups/postcodes.csv` |
 
@@ -55,6 +59,8 @@ different things — and only compared where it makes sense.
   >100% in earlier years. Treat occupancy as a relative signal.
 - A day inside a school-holiday period is labelled "School holiday" even if it is also a public holiday or long weekend.
 - Camping-area names changed spelling many times across exports ("M.V. Sarawak" / "MV Sarawak", tent/trailer sub-sites of one campground); they are merged under the booking site's current name, with the as-exported name kept in the table.
+- **Revenue is an estimate**, not takings: concessions, refunds, the family rate and counter‑sale mix are approximated,
+  so it runs roughly 5–13% from audited figures. Nominal dollars.
 - Vehicle permits carry no coordinates; recreation areas are shown at approximate centroids.
 
 ## Stack

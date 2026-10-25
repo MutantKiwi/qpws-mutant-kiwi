@@ -202,24 +202,18 @@ def main():
     con.execute("""
     CREATE OR REPLACE TABLE camp_span AS
     WITH base AS (SELECT * FROM camp_typed WHERE stay_date IS NULL),
-    with_id AS (
-        SELECT DISTINCT ON (res_id, park, area, start_date) * FROM base WHERE res_id IS NOT NULL
-    ),
-    no_id AS (
+    keyed AS (
+        SELECT postcode, state_given, booking_date, start_date, departure_date, park, area, adults, children, infants, source_file, count(*) AS n, min(res_id) AS res_id
+        FROM base GROUP BY ALL
+    ), collapsed AS (
         SELECT postcode, state_given, booking_date, start_date, departure_date, park, area, adults, children, infants,
-               min(source_file) AS source_file, max(n) AS n
-        FROM (SELECT postcode, state_given, booking_date, start_date, departure_date, park, area, adults, children, infants, source_file, count(*) n
-              FROM base WHERE res_id IS NULL GROUP BY ALL)
-        GROUP BY ALL
-    ),
-    no_id_x AS (SELECT * EXCLUDE (n), unnest(range(n)) AS i FROM no_id)
+               min(source_file) AS source_file, max(n) AS n, min(res_id) AS res_id
+        FROM keyed GROUP BY postcode, state_given, booking_date, start_date, departure_date, park, area, adults, children, infants
+    )
     SELECT res_id AS booking_id, booking_date, start_date AS arrival_date, departure_date,
         greatest(1, date_diff('day', start_date, departure_date))::INTEGER AS nights,
-        adults, children, infants, park, area, postcode, state_given, source_file, 'span_rows' AS era FROM with_id
-    UNION ALL
-    SELECT NULL, booking_date, start_date, departure_date,
-        greatest(1, date_diff('day', start_date, departure_date))::INTEGER,
-        adults, children, infants, park, area, postcode, state_given, source_file, 'span_rows' FROM no_id_x""")
+        adults, children, infants, park, area, postcode, state_given, source_file, 'span_rows' AS era
+    FROM (SELECT * EXCLUDE (n), unnest(range(n)) AS i FROM collapsed)""")
 
     # Era L: 2011-2016 legacy master (already one row per booking; DAYS = nights)
     leg_c = str(work / "legacy" / "qpws-permits-camping-master-2011-2016.csv")
@@ -286,18 +280,22 @@ def main():
             {STATE_EXPR.format(c='state_raw')} AS state_given,
             CASE WHEN permit_id IS NULL THEN 'legacy_or_span' ELSE 'id_rows' END AS era
         FROM (SELECT * FROM veh_raw UNION ALL SELECT * FROM veh_legacy_raw)
-    ), with_id AS (
-        SELECT DISTINCT ON (permit_id, p, start_date) * FROM typed WHERE permit_id IS NOT NULL
-    ), no_id AS (
-        -- no permit id (legacy + 2025Q2→): keep max per-file count of each identical key (see camping note)
-        SELECT source_file, p, booking_date, start_date, postcode, state_given, era, max(n) AS n FROM (
-            SELECT min(source_file) source_file, p, booking_date, start_date, postcode, state_given, era, source_file AS sf, count(*) n
-            FROM typed WHERE permit_id IS NULL GROUP BY p, booking_date, start_date, postcode, state_given, era, sf)
-        GROUP BY ALL
+    ), typed_cut AS (
+        -- legacy master owns everything before 1 Jul 2016; quarterly files (YYYY_Qn_ prefix) own the rest
+        SELECT * FROM typed WHERE (regexp_matches(source_file, '^[0-9][0-9][0-9][0-9]_Q[0-9]_') AND start_date >= DATE '2016-07-01')
+                              OR (NOT regexp_matches(source_file, '^[0-9][0-9][0-9][0-9]_Q[0-9]_') AND start_date < DATE '2016-07-01')
+    ), keyed AS (
+        -- The quarterly exports list permits VALID during the quarter, so an annual permit recurs in 4-5 files, and the
+        -- ID column changed scheme several times (Unique ID / none / Confirmation Number / Itinerary ID / none), so IDs
+        -- cannot be trusted across files. Dedupe on attributes: per identical key keep the MAX count seen in any single
+        -- file (removes cross-file repeats; keeps genuinely identical permits bought the same day from one postcode).
+        SELECT p, booking_date, start_date, postcode, state_given, era, source_file, count(*) AS n, min(permit_id) AS permit_id
+        FROM typed_cut GROUP BY ALL
+    ), collapsed AS (
+        SELECT p, booking_date, start_date, postcode, state_given, min(era) AS era, min(source_file) AS source_file, max(n) AS n, min(permit_id) AS permit_id
+        FROM keyed GROUP BY p, booking_date, start_date, postcode, state_given
     ), dedup AS (
-        SELECT permit_id, source_file, p, booking_date, start_date, postcode, state_given, era FROM with_id
-        UNION ALL
-        SELECT NULL, source_file, p, booking_date, start_date, postcode, state_given, era FROM (SELECT * EXCLUDE (n), unnest(range(n)) i FROM no_id)
+        SELECT permit_id, source_file, p, booking_date, start_date, postcode, state_given, era FROM (SELECT * EXCLUDE (n), unnest(range(n)) i FROM collapsed)
     )
     SELECT row_number() OVER () AS row_id, permit_id, era, source_file, booking_date, start_date,
         p AS product_raw, {AREA_EXPR} AS area, {DURATION_EXPR} AS duration, {FLAGS_EXPR} AS permit_class,
@@ -475,6 +473,30 @@ def main():
             c.day_type, c.is_school_holiday, c.is_public_holiday, c.is_long_weekend, c.is_weekend, c.school_holiday
         FROM agg a LEFT JOIN areas ar ON ar.park = a.park AND ar.area = a.area LEFT JOIN calendar c ON c.date = a.date""")
 
+    # 5d. FEES -> estimated revenue -------------------------------------------------------------
+    print("Fees / estimated revenue ...")
+    fees_csv = raw / "lookups" / "fees.csv"
+    con.execute(f"""CREATE OR REPLACE TABLE fees AS
+        SELECT fy, try_cast(left(fy,4) AS INTEGER) AS fy_start, fee_type, area, duration, try_cast(amount AS DOUBLE) AS amount, source
+        FROM read_csv('{fees_csv.as_posix()}', all_varchar=true, header=true)""")
+    # financial year of each record (1 July start)
+    for t, dcol in (("camping", "arrival_date"), ("vehicle", "start_date")):
+        con.execute(f"ALTER TABLE {t} ADD COLUMN IF NOT EXISTS fy VARCHAR")
+        con.execute(f"""UPDATE {t} SET fy = CASE WHEN month({dcol}) >= 7 THEN year({dcol}) || '-' || right((year({dcol})+1)::VARCHAR, 2)
+                                             ELSE (year({dcol})-1) || '-' || right(year({dcol})::VARCHAR, 2) END""")
+    # camping: per-person-per-night fee x chargeable people (infants free), family cap of 4 x pp when <= 2 adults
+    con.execute("ALTER TABLE camping ADD COLUMN IF NOT EXISTS est_revenue DOUBLE")
+    con.execute("""UPDATE camping SET est_revenue = round(f.amount * nights *
+            CASE WHEN coalesce(adults,0) <= 2 THEN least(coalesce(adults,0) + coalesce(children,0), 4) ELSE coalesce(adults,0) + coalesce(children,0) END, 2)
+        FROM fees f WHERE f.fee_type = 'camping' AND f.duration = 'per person per night' AND f.fy = camping.fy""")
+    # vehicle: fee by area x duration x FY; fee-exempt / educational -> 0
+    con.execute("ALTER TABLE vehicle ADD COLUMN IF NOT EXISTS est_revenue DOUBLE")
+    con.execute("""UPDATE vehicle SET est_revenue = CASE WHEN permit_class IN ('Fee exempt','Educational') THEN 0 ELSE f.amount END
+        FROM fees f WHERE f.fee_type = 'vehicle' AND f.fy = vehicle.fy AND f.area = vehicle.area
+          AND f.duration = CASE vehicle.duration WHEN 'Daily' THEN (CASE WHEN vehicle.permit_class = 'Counter sale' THEN 'Daily (counter)' ELSE 'Daily (online)' END)
+                                                WHEN 'Weekly' THEN 'Weekly' WHEN 'Monthly' THEN 'Monthly' WHEN 'Annual' THEN 'Annual' END""")
+    con.execute("UPDATE vehicle SET est_revenue = 0 WHERE est_revenue IS NULL AND permit_class IN ('Fee exempt','Educational')")
+
     # 6. WRITE ---------------------------------------------------------------------
     import shutil
     for t in ("camping", "vehicle", "area_day"):   # partitioned by year: keeps every file small and lets DuckDB prune by date
@@ -482,7 +504,7 @@ def main():
         if d.exists(): shutil.rmtree(d)
         con.execute(f"COPY (SELECT * FROM {t}) TO '{d.as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD, PARTITION_BY (year), OVERWRITE_OR_IGNORE)")
         print(f"  wrote {t}/year=*/  rows={con.execute(f'select count(*) from {t}').fetchone()[0]:,}")
-    for t in ("areas", "postcodes", "calendar"):
+    for t in ("areas", "postcodes", "calendar", "fees"):
         con.execute(f"COPY {t} TO '{(out / (t + '.parquet')).as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD)")
         print(f"  wrote {t}.parquet  rows={con.execute(f'select count(*) from {t}').fetchone()[0]:,}")
 
@@ -508,6 +530,9 @@ def main():
         FROM calendar c LEFT JOIN camping b ON b.arrival_date = c.date WHERE c.date BETWEEN (SELECT min(arrival_date) FROM camping) AND (SELECT max(arrival_date) FROM camping) GROUP BY 1 ORDER BY per_day DESC""", ["day_type","days","bookings","bookings_per_day"]), ""]
     report += ["## Capacity coverage (current BookEasy site config applied to all years)", tbl("""SELECT capacity_type, count(*) areas, sum(bookings) bookings, sum(sites_cap) sites, sum(people_cap) people_cap FROM areas GROUP BY 1 ORDER BY 2 DESC""", ["capacity_type","areas","bookings","sites","people_cap"]), ""]
     report += ["## Occupancy sanity: area-nights over 100% of cap (expect some — group bookings, config changes)", tbl("""SELECT CASE WHEN occ_pct IS NULL THEN 'no cap' WHEN occ_pct<=50 THEN '0-50%' WHEN occ_pct<=90 THEN '50-90%' WHEN occ_pct<=100 THEN '90-100%' WHEN occ_pct<=150 THEN '100-150%' ELSE '>150%' END band, count(*) area_nights FROM area_day GROUP BY 1 ORDER BY 1""", ["band","area_nights"]), ""]
+    report += ["## Estimated revenue by financial year (camping person-nights x fee; vehicle permits x fee)", tbl("""SELECT c.fy, c.rev camping_rev, c.unpriced camping_unpriced, v.rev vehicle_rev, v.unpriced vehicle_unpriced FROM
+        (SELECT fy, round(sum(est_revenue)) rev, count(*) FILTER (WHERE est_revenue IS NULL) unpriced FROM camping GROUP BY 1) c
+        FULL JOIN (SELECT fy, round(sum(est_revenue)) rev, count(*) FILTER (WHERE est_revenue IS NULL) unpriced FROM vehicle GROUP BY 1) v USING (fy) ORDER BY fy""", ["fy","camping $","camping rows unpriced","vehicle $","vehicle rows unpriced"]), ""]
     report += ["## State normalisation", tbl("SELECT state, count(*) n FROM camping GROUP BY 1 ORDER BY n DESC", ["state","camping_rows"]), ""]
     report += ["## Suspicious values", tbl("""SELECT 'camping nights > 60' chk, count(*) n FROM camping WHERE nights > 60
         UNION ALL SELECT 'camping people > 30', count(*) FROM camping WHERE people > 30

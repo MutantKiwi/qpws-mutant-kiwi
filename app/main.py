@@ -30,7 +30,7 @@ for t in ("camping", "vehicle", "area_day"):
     if not d.exists():
         raise SystemExit(f"missing {d}; run etl/etl.py first")
     _db.execute(f"CREATE VIEW {t} AS SELECT * FROM read_parquet('{d.as_posix()}/**/*.parquet', hive_partitioning=true)")
-for t in ("areas", "postcodes", "calendar"):
+for t in ("areas", "postcodes", "calendar", "fees"):
     p = DATA_DIR / f"{t}.parquet"
     if not p.exists():
         raise SystemExit(f"missing {p}; run etl/etl.py first")
@@ -116,19 +116,19 @@ def parse_filters(request: Request) -> Filters:
 
 # measures available per dataset
 MEASURES = {
-    "camping": {"bookings": "count(*)", "nights": "sum(nights)", "person_nights": "sum(person_nights)", "people": "sum(people)",
+    "camping": {"bookings": "count(*)", "nights": "sum(nights)", "person_nights": "sum(person_nights)", "people": "sum(people)", "revenue": "round(sum(est_revenue))",
                 "avg_nights": "avg(nights)", "avg_people": "avg(people)", "avg_lead_days": "avg(lead_days)"},
-    "vehicle": {"permits": "count(*)", "permit_days": "sum(days_valid)", "avg_lead_days": "avg(lead_days)"},
+    "vehicle": {"permits": "count(*)", "permit_days": "sum(days_valid)", "revenue": "round(sum(est_revenue))", "avg_lead_days": "avg(lead_days)"},
 }
 DIMS = {
     "camping": {"park": "park", "area": "area", "state": "state", "sa4": "o_sa4", "postcode": "postcode", "locality": "o_locality",
-                "year": "year", "quarter": "quarter", "month": "month", "dow": "dayofweek(arrival_date)",
+                "year": "year", "fy": "fy", "quarter": "quarter", "month": "month", "dow": "dayofweek(arrival_date)",
                 "nights_bucket": "CASE WHEN nights=1 THEN '1' WHEN nights=2 THEN '2' WHEN nights<=4 THEN '3-4' WHEN nights<=7 THEN '5-7' ELSE '8+' END",
                 "party_size": "CASE WHEN people<=1 THEN '1' WHEN people=2 THEN '2' WHEN people<=4 THEN '3-4' WHEN people<=8 THEN '5-8' ELSE '9+' END",
                 "lead_bucket": "CASE WHEN lead_days<=0 THEN 'same day' WHEN lead_days<=7 THEN '1-7d' WHEN lead_days<=30 THEN '8-30d' WHEN lead_days<=90 THEN '1-3m' WHEN lead_days<=180 THEN '3-6m' ELSE '6m+' END",
                 "day_type": "day_type", "school_holiday": "coalesce(school_holiday, 'Term time')", "school_term": "school_term", "era": "era"},
     "vehicle": {"area": "area", "duration": "duration", "permit_class": "permit_class", "product": "product_raw", "state": "state", "sa4": "o_sa4",
-                "postcode": "postcode", "locality": "o_locality", "year": "year", "quarter": "quarter", "month": "month", "dow": "dayofweek(start_date)",
+                "postcode": "postcode", "locality": "o_locality", "year": "year", "fy": "fy", "quarter": "quarter", "month": "month", "dow": "dayofweek(start_date)",
                 "lead_bucket": "CASE WHEN lead_days<=0 THEN 'same day' WHEN lead_days<=7 THEN '1-7d' WHEN lead_days<=30 THEN '8-30d' WHEN lead_days<=90 THEN '1-3m' WHEN lead_days<=180 THEN '3-6m' ELSE '6m+' END",
                 "day_type": "day_type", "school_holiday": "coalesce(school_holiday, 'Term time')", "school_term": "school_term", "era": "era"},
 }
@@ -171,12 +171,14 @@ def summary(request: Request):
             round(100.0*sum(CASE WHEN is_school_holiday THEN 1 ELSE 0 END)/nullif(count(*),0),1) pct_school_holiday,
             round(100.0*sum(sh_nights)/nullif(sum(nights),0),1) pct_nights_school_holiday,
             round(100.0*sum(CASE WHEN lat IS NOT NULL THEN 1 ELSE 0 END)/nullif(count(*),0),1) pct_geocoded,
+            round(sum(est_revenue)) revenue,
             count(DISTINCT park) parks, count(DISTINCT area) areas, min(arrival_date) date_min, max(arrival_date) date_max
             FROM camping_x WHERE {w}"""
     else:
         sql = f"""SELECT count(*) permits, sum(days_valid) permit_days, round(median(lead_days)) median_lead_days,
             round(100.0*sum(CASE WHEN state<>'QLD' THEN 1 ELSE 0 END)/nullif(count(*),0),1) pct_non_qld,
             round(100.0*sum(CASE WHEN duration='Annual' THEN 1 ELSE 0 END)/nullif(count(*),0),1) pct_annual,
+            round(sum(est_revenue)) revenue,
             round(100.0*sum(CASE WHEN is_school_holiday THEN 1 ELSE 0 END)/nullif(count(*),0),1) pct_school_holiday,
             count(DISTINCT area) areas, min(start_date) date_min, max(start_date) date_max
             FROM vehicle_x WHERE {w}"""
@@ -425,6 +427,19 @@ def occupancy_inhouse(request: Request, grain: Literal["day", "week", "month", "
     cap = q(f"SELECT any_value(capacity_type) capacity_type, sum(sites_cap) sites_cap, sum(people_cap) people_cap, count(*) areas FROM areas WHERE {' AND '.join(cw)}", cp)[0]
     return {"rows": rows, "capacity": cap}
 
+@app.get("/api/fees")
+def fees(request: Request):
+    """Fee schedule by financial year, plus estimated revenue by FY for the current filters (both datasets)."""
+    sched = q("SELECT fy, fee_type, area, duration, amount, source FROM fees ORDER BY fy, fee_type, area, duration")
+    f = parse_filters(request)
+    out = {}
+    for ds in ("camping", "vehicle"):
+        f.dataset = ds; w, p = f.where()
+        out[ds] = q(f"""SELECT fy, count(*) n, round(sum(est_revenue)) revenue, count(*) FILTER (WHERE est_revenue IS NULL) unpriced
+                        FROM {f.table} WHERE {w} AND fy IS NOT NULL GROUP BY 1 ORDER BY 1""", p)
+    return {"schedule": sched, "revenue": out,
+            "note": "Estimates: camping = chargeable people (infants free, family cap 4 x per-person when <= 2 adults) x nights x per-person fee for that FY; vehicle = permit x fee for area/duration/FY, fee-exempt and educational = $0. Calibrates within ~10% of audited 2022-23 figures (QoN 1010/2023)."}
+
 @app.get("/api/map/areas")
 def map_areas(request: Request, metric: str = None):
     f = parse_filters(request); f.dataset = "camping"; w, p = f.where()
@@ -456,9 +471,9 @@ def map_flows(request: Request, top: int = Query(200, le=2000)):
 
 TABLE_COLS = {
     "camping": ["row_id", "booking_id", "booking_date", "arrival_date", "departure_date", "nights", "adults", "children", "infants", "people",
-                "park", "area", "area_raw", "postcode", "o_locality", "state", "lead_days", "day_type", "school_holiday", "public_holiday", "sh_nights", "era", "source_file"],
+                "park", "area", "area_raw", "postcode", "o_locality", "state", "lead_days", "fy", "est_revenue", "day_type", "school_holiday", "public_holiday", "sh_nights", "era", "source_file"],
     "vehicle": ["row_id", "permit_id", "booking_date", "start_date", "area", "duration", "permit_class", "days_valid", "product_raw",
-                "postcode", "o_locality", "state", "lead_days", "day_type", "school_holiday", "public_holiday", "era", "source_file"],
+                "postcode", "o_locality", "state", "lead_days", "fy", "est_revenue", "day_type", "school_holiday", "public_holiday", "era", "source_file"],
 }
 
 @app.get("/api/table")
